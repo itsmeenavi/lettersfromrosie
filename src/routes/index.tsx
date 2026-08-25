@@ -18,13 +18,13 @@ function App() {
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to="/writing"
-            className="rounded-full border border-[rgba(212,163,115,0.3)] bg-[rgba(212,163,115,0.14)] px-6 py-3 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(212,163,115,0.24)]"
+            className="rounded-full border border-[rgba(181,88,110,0.3)] bg-[rgba(212,137,158,0.14)] px-6 py-3 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(212,137,158,0.24)]"
           >
             Read my work
           </Link>
           <Link
             to="/about"
-            className="rounded-full border border-[rgba(42,31,26,0.2)] bg-white/50 dark:bg-black/20 px-6 py-3 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(42,31,26,0.35)]"
+            className="rounded-full border border-[rgba(58,35,41,0.16)] bg-white/50 dark:bg-black/20 px-6 py-3 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(58,35,41,0.3)]"
           >
             About me
           </Link>
