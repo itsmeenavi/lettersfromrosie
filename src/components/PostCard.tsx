@@ -8,7 +8,7 @@ export default function PostCard({ post, index }: { post: Post; index: number })
     >
       {post.image && (
         <div className="h-40 w-full overflow-hidden bg-[var(--cloud-pink)]">
-          <img src={post.image} alt="" className="h-full w-full object-cover" />
+          <img src={post.image.replace(/resize:fill:\d+:\d+/, 'resize:fill:600:400')} alt="" className="h-full w-full object-cover" />
         </div>
       )}
       <div className="flex flex-col flex-grow p-6">
