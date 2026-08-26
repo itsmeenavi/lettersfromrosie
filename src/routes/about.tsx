@@ -42,52 +42,48 @@ function AboutComponent() {
   return (
     <main className="page-wrap px-4 py-16 lg:py-24">
       {/* HEADER */}
-      <div className="mb-20 text-center">
-        <h1 className="display-title text-6xl lg:text-8xl font-bold text-[var(--sea-ink)] drop-shadow-sm">
+      <div className="mb-16 text-center">
+        <h1 className="display-title text-5xl lg:text-7xl font-bold text-[var(--sea-ink)] drop-shadow-sm">
           About Me
         </h1>
-        <div className="mx-auto mt-6 h-1 w-24 rounded-full bg-gradient-to-r from-[var(--rose-blush)] to-transparent"></div>
+        <div className="mx-auto mt-8 h-[2px] w-16 bg-[var(--lagoon)] rounded-full"></div>
       </div>
 
       {/* FULL BIO - ELEGANT TYPOGRAPHY */}
-      <section className="mx-auto max-w-3xl mb-24 relative">
-        <div className="absolute -left-12 -top-8 text-9xl text-[var(--cloud-pink)] font-serif opacity-30 select-none">"</div>
-        <div className="space-y-10 text-xl leading-[2rem] text-[var(--sea-ink)] relative z-10 font-serif">
-          <p className="first-letter:text-5xl first-letter:font-bold first-letter:text-[var(--lagoon-deep)] first-letter:mr-1 first-letter:float-left">
-            Hi there! I’m Rosie, the voice behind Letters from Rosie, a heartfelt space I started on Medium back in May 2024. I write from the rawest parts of myself — hoping that somewhere, someone might feel less alone because of it. What began as a quiet dream has now blossomed into a beautiful, growing community of thousands — and for that, I’m endlessly grateful.
-          </p>
-          <p>
-            <strong className="font-bold text-[var(--lagoon-deep)]">The Silent Notes Archive</strong> is a continuation of that dream. I created it as a safe space — a gentle home for those who, like me, have once been trapped in their own thoughts. It’s for the quiet ones, the overthinkers, the souls carrying words they’ve never been able to say out loud. 
-          </p>
-          <p className="border-l-4 border-[var(--rose-blush)] pl-6 italic text-[var(--sea-ink-soft)]">
-            Inspired by the deeply moving work of Geloy Concepcion, I’m launching #TheSilentNotes with an open heart and a deep hope: that this space becomes a home for your truths, too.
-          </p>
-          <p>
-            To everyone who’s supported me on TikTok, Medium, and beyond — thank you. Your kindness and belief in me gave me the courage to take this leap.
-          </p>
+      <section className="mx-auto max-w-2xl mb-24 text-lg leading-relaxed text-[var(--sea-ink-soft)] font-serif space-y-8">
+        <p className="text-xl text-[var(--sea-ink)] font-medium">
+          Hi there! I’m Rosie, the voice behind Letters from Rosie, a heartfelt space I started on Medium back in May 2024.
+        </p>
+        <p>
+          I write from the rawest parts of myself — hoping that somewhere, someone might feel less alone because of it. What began as a quiet dream has now blossomed into a beautiful, growing community of thousands — and for that, I’m endlessly grateful.
+        </p>
+        <p>
+          <strong className="font-bold text-[var(--sea-ink)]">The Silent Notes Archive</strong> is a continuation of that dream. I created it as a safe space — a gentle home for those who, like me, have once been trapped in their own thoughts. It’s for the quiet ones, the overthinkers, the souls carrying words they’ve never been able to say out loud. 
+        </p>
+        <div className="border-l-2 border-[var(--lagoon)] pl-6 my-10 py-2 italic text-[var(--sea-ink)]">
+          Inspired by the deeply moving work of Geloy Concepcion, I’m launching #TheSilentNotes with an open heart and a deep hope: that this space becomes a home for your truths, too.
         </div>
+        <p>
+          To everyone who’s supported me on TikTok, Medium, and beyond — thank you. Your kindness and belief in me gave me the courage to take this leap.
+        </p>
         
         {/* SHARE YOUR STORY CARD */}
-        <div className="mt-20 group relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[var(--cloud-pink)] to-white p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[var(--rose-blush)] transition-all duration-500 hover:shadow-[0_20px_50px_rgb(0,0,0,0.1)]">
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 h-40 w-40 rounded-full bg-[var(--rose-blush)] opacity-20 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-40 w-40 rounded-full bg-[var(--lagoon-deep)] opacity-10 blur-3xl"></div>
-          
+        <div className="mt-20 island-shell relative overflow-hidden rounded-3xl p-10 sm:p-14 text-center transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
           <div className="relative z-10">
-            <h3 className="font-handwriting text-4xl text-[var(--lagoon-deep)] mb-4">A safe space</h3>
-            <p className="mb-10 text-xl font-medium text-[var(--sea-ink)] max-w-xl mx-auto leading-relaxed">
+            <h3 className="display-title text-3xl sm:text-4xl text-[var(--sea-ink)] mb-4">A safe space</h3>
+            <p className="mb-10 text-[var(--sea-ink-soft)] max-w-md mx-auto">
               If there’s something weighing on your heart — a story, a thought, a silent note of your own — I invite you to share it here.
             </p>
             <a 
               href="https://forms.gle/UsjWuThKQSVK6azk7" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-[var(--sea-ink)] px-10 py-4 font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-[var(--lagoon-deep)] text-lg"
+              className="inline-flex items-center justify-center rounded-full bg-[var(--lagoon)] !text-white px-8 py-3.5 font-bold transition-all hover:bg-[var(--lagoon-deep)] hover:scale-105"
             >
               Share Your Story 💌
             </a>
-            <p className="mt-8 text-[var(--sea-ink-soft)] italic font-serif">
-              Only if and when you're ready. This space will be here.<br/>
-              Let your story find a home.
+            <p className="mt-8 text-sm italic text-[var(--sea-ink-soft)] opacity-80">
+              Only if and when you're ready. Let your story find a home.
             </p>
           </div>
         </div>
