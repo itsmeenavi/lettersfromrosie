@@ -3,6 +3,33 @@ import { getAllPosts } from '../../lib/content'
 import PostCard from '../../components/PostCard'
 import { useState } from 'react'
 
+function parseDate(dateStr: string): number {
+  if (!dateStr) return 0;
+  
+  // Handle relative times like "6d ago", "2h ago"
+  if (dateStr.includes('ago')) {
+    const num = parseInt(dateStr, 10);
+    if (isNaN(num)) return 0;
+    const now = new Date();
+    if (dateStr.includes('d')) now.setDate(now.getDate() - num);
+    else if (dateStr.includes('h')) now.setHours(now.getHours() - num);
+    else if (dateStr.includes('m')) now.setMinutes(now.getMinutes() - num);
+    return now.getTime();
+  }
+
+  // Handle standard dates
+  const parsed = new Date(dateStr);
+  if (isNaN(parsed.getTime())) return 0;
+
+  // Medium omits the year for the current year.
+  // If the string doesn't have a 4-digit year, JS defaults to 2001. Fix it to current year.
+  if (!/\d{4}/.test(dateStr)) {
+    parsed.setFullYear(new Date().getFullYear());
+  }
+
+  return parsed.getTime();
+}
+
 export const Route = createFileRoute('/writing/')({
   component: WritingIndex,
   loader: async () => {
@@ -16,7 +43,7 @@ function WritingIndex() {
 
   const filteredPosts = posts.filter(post => 
     post.title.toLowerCase().includes(query.toLowerCase())
-  )
+  ).sort((a, b) => parseDate(b.date) - parseDate(a.date))
 
   return (
     <main className="page-wrap px-4 py-12">

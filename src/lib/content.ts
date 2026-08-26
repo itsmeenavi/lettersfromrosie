@@ -1,6 +1,5 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
 import { createServerFn } from '@tanstack/react-start'
+import { supabase } from './supabase'
 
 export type Post = {
   title: string
@@ -9,15 +8,20 @@ export type Post = {
   image?: string
 }
 
-const JSON_PATH = path.join(process.cwd(), 'src/rosie_posts_with_images.json')
-
 export const getAllPosts = createServerFn({ method: 'GET' }).handler(async () => {
   try {
-    const fileContent = await fs.readFile(JSON_PATH, 'utf-8')
-    const posts: Post[] = JSON.parse(fileContent)
-    return posts
+    const { data: posts, error } = await supabase
+      .from('posts')
+      .select('title, date, link, image')
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return []
+    }
+
+    return (posts || []) as Post[]
   } catch (e) {
-    console.error('Failed to load posts:', e)
+    console.error('Failed to load posts from Supabase:', e)
     return []
   }
 })

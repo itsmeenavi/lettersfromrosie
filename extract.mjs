@@ -1,6 +1,30 @@
 import fs from 'fs';
 import * as cheerio from 'cheerio';
 
+function convertToAbsoluteDate(dateStr) {
+  if (!dateStr || dateStr === 'Unknown') return 'Unknown';
+  
+  // If it's a relative date like "6d ago", calculate the absolute date
+  if (dateStr.includes('ago')) {
+    const num = parseInt(dateStr, 10);
+    if (isNaN(num)) return dateStr;
+    const now = new Date();
+    if (dateStr.includes('d')) now.setDate(now.getDate() - num);
+    else if (dateStr.includes('h')) now.setHours(now.getHours() - num);
+    else if (dateStr.includes('m')) now.setMinutes(now.getMinutes() - num);
+    
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  }
+  
+  // If it's missing a year (e.g. "Dec 16"), append the current year
+  if (!/\d{4}/.test(dateStr) && /^[A-Z][a-z]{2} \d{1,2}$/.test(dateStr)) {
+    return `${dateStr}, ${new Date().getFullYear()}`;
+  }
+  
+  return dateStr;
+}
+
 const html = fs.readFileSync('c:/Users/Ivhan/Downloads/letters from rosie – Medium.html', 'utf8');
 const $ = cheerio.load(html);
 
@@ -32,7 +56,7 @@ $('article').each((i, el) => {
     posts.push({
       title,
       link: link.split('?')[0],
-      date: dateStr,
+      date: convertToAbsoluteDate(dateStr),
     });
   }
 });

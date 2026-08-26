@@ -11,3 +11,8 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+
+# Temporary scripts and data
+*.sql
+generate_seed.mjs
+src/rosie_posts_with_images.json

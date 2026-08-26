@@ -1,5 +1,32 @@
 import type { Post } from '../lib/content'
 
+function formatDisplayDate(dateStr: string) {
+  const date = new Date(dateStr)
+  if (isNaN(date.getTime())) return dateStr
+
+  // If it already says 'ago' just pass it through
+  if (dateStr.includes('ago')) return dateStr
+
+  const now = new Date()
+  const diffTime = now.getTime() - date.getTime()
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+  if (diffDays >= 0 && diffDays <= 7) {
+    if (diffDays === 0) return 'Today'
+    return `${diffDays}d ago`
+  }
+
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const month = months[date.getMonth()]
+  const day = date.getDate()
+  
+  if (date.getFullYear() === now.getFullYear()) {
+    return `${month} ${day}`
+  }
+  
+  return `${month} ${day}, ${date.getFullYear()}`
+}
+
 export default function PostCard({ post, index }: { post: Post; index: number }) {
   return (
     <article
@@ -16,7 +43,7 @@ export default function PostCard({ post, index }: { post: Post; index: number })
           <span className="rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] px-2.5 py-1 text-xs font-semibold text-[var(--sea-ink-soft)]">
             Medium
           </span>
-          <span className="text-xs text-[var(--sea-ink-soft)]">{post.date}</span>
+          <span className="text-xs text-[var(--sea-ink-soft)]">{formatDisplayDate(post.date)}</span>
         </div>
         <h3 className="display-title mb-2 text-xl font-bold text-[var(--sea-ink)]">
           {post.title}
@@ -29,3 +56,4 @@ export default function PostCard({ post, index }: { post: Post; index: number })
     </article>
   )
 }
+
