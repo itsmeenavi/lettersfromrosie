@@ -33,9 +33,12 @@ function RouteComponent() {
           />
           <span className="font-handwriting text-7xl text-[var(--sea-ink-soft)] opacity-40 hidden">R</span>
         </div>
-        <div className="mx-auto max-w-2xl text-lg leading-relaxed text-[var(--sea-ink-soft)]">
+        <div className="mx-auto max-w-2xl text-lg leading-relaxed text-[var(--sea-ink-soft)] space-y-4">
           <p>
-            I’m the voice behind Letters from Rosie, a heartfelt space I started on Medium back in May 2024. I write from the rawest parts of myself — hoping that somewhere, someone might feel less alone because of it. What began as a quiet dream has now blossomed into a beautiful, growing community of thousands — and for that, I’m endlessly grateful.
+            Roselyn Mariano is a Filipino writer and artist behind Letters from Rosie, a little corner she started on Medium in May 2024. What began as a quiet place to put her thoughts into words slowly became a growing community of readers who found comfort in the stories and reflections she shared.
+          </p>
+          <p>
+            Roselyn writes about the things she knows and feels, hoping that her words might reach someone who needs them and make them feel a little less alone. What started as a simple dream has slowly grown into a community of readers across Medium, Substack, Instagram, TikTok, and beyond—something she is incredibly grateful to be a part of.
           </p>
         </div>
       </section>

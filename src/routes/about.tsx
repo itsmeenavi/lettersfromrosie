@@ -52,20 +52,23 @@ function AboutComponent() {
       {/* FULL BIO - ELEGANT TYPOGRAPHY */}
       <section className="mx-auto max-w-2xl mb-24 text-lg leading-relaxed text-[var(--sea-ink-soft)] font-serif space-y-8">
         <p className="text-xl text-[var(--sea-ink)] font-medium">
-          Hi there! I’m Rosie, the voice behind Letters from Rosie, a heartfelt space I started on Medium back in May 2024.
+          Hi, I’m Roselyn Mariano, though most people know me as Rosie. I’m a Filipino writer and artist behind Letters from Rosie, a little corner I started on Medium in May 2024. I began writing there simply because I had so many things I wanted to say, and I hoped that somewhere along the way, someone might find a little comfort in my words.
         </p>
         <p>
-          I write from the rawest parts of myself — hoping that somewhere, someone might feel less alone because of it. What began as a quiet dream has now blossomed into a beautiful, growing community of thousands — and for that, I’m endlessly grateful.
+          I write about healing, hope, self-love, growing through life, and learning to live at your own pace. Most of what I write comes from things I’ve felt, experienced, and sometimes struggled to put into words. Writing became a way for me to make sense of those feelings, but more than that, it became a way to remind others that they don’t have to go through everything alone.
         </p>
         <p>
-          <strong className="font-bold text-[var(--sea-ink)]">The Silent Notes Archive</strong> is a continuation of that dream. I created it as a safe space — a gentle home for those who, like me, have once been trapped in their own thoughts. It’s for the quiet ones, the overthinkers, the souls carrying words they’ve never been able to say out loud. 
+          Over time, Letters from Rosie grew into a community of readers across Medium, Substack, Instagram, TikTok, and beyond. I’m incredibly grateful for every person who has stayed, read my words, shared their own stories, or simply found a little comfort in something I wrote.
         </p>
-        <div className="border-l-2 border-[var(--lagoon)] pl-6 my-10 py-2 italic text-[var(--sea-ink)]">
-          Inspired by the deeply moving work of Geloy Concepcion, I’m launching #TheSilentNotes with an open heart and a deep hope: that this space becomes a home for your truths, too.
+        <p>
+          That same intention led me to create <strong className="font-bold text-[var(--sea-ink)]">The Silent Notes Archive</strong>—a space for the things we often keep to ourselves. It’s for the overthinkers, the quiet ones, and anyone carrying thoughts or feelings they’ve never quite known how to say out loud. Inspired by the work of Geloy Concepcion, I wanted The Silent Notes to be a place where people could leave their words without having to explain everything behind them.
+        </p>
+        <p>
+          Outside of writing, I love illustrating, painting, taking photographs, drinking matcha, and spending time with cats. I find inspiration in ordinary days, small moments, old memories, and the little things that make life worth noticing.
+        </p>
+        <div className="border-l-2 border-[var(--lagoon)] pl-6 my-10 py-2 italic text-[var(--sea-ink)] text-xl">
+          At the heart of everything I create, I simply hope my words can reach someone at the right moment—to make them feel seen, understood, and a little less alone.
         </div>
-        <p>
-          To everyone who’s supported me on TikTok, Medium, and beyond — thank you. Your kindness and belief in me gave me the courage to take this leap.
-        </p>
         
         {/* SHARE YOUR STORY CARD */}
         <div className="mt-20 island-shell relative overflow-hidden rounded-3xl p-10 sm:p-14 text-center transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
