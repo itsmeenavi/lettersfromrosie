@@ -57,7 +57,7 @@ function RouteComponent() {
         </div>
         
         <div className="mt-16 text-center">
-          <Link to="/writing" className="inline-flex items-center justify-center rounded-full bg-[var(--sea-ink)] px-8 py-3.5 text-sm font-bold text-white transition-all hover:scale-105 hover:bg-[var(--sea-ink-soft)] shadow-md hover:shadow-xl">
+          <Link to="/writing" className="inline-flex items-center justify-center rounded-full bg-[var(--lagoon)] !text-white px-8 py-3.5 font-bold transition-all hover:bg-[var(--lagoon-deep)] hover:scale-105 shadow-md hover:shadow-lg">
             View the Full Archive
           </Link>
         </div>
