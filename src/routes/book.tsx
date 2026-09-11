@@ -12,6 +12,11 @@ import { OrderStep4Package } from '../components/book/steps/OrderStep4Package'
 import { OrderStep5Payment } from '../components/book/steps/OrderStep5Payment'
 import { OrderStep6Success } from '../components/book/steps/OrderStep6Success'
 import { ImageLightboxModal, type LightboxImage } from '../components/book/ImageLightboxModal'
+import {
+  type SocialAccount,
+  type SocialPlatform,
+  formatSocialUrl,
+} from '../components/book/types'
 
 export const Route = createFileRoute('/book')({
   component: BookComponent,
@@ -46,7 +51,9 @@ function BookComponent() {
   const [name, setName] = useState('')
   const [pronouns, setPronouns] = useState('')
   const [email, setEmail] = useState('')
-  const [socialLink, setSocialLink] = useState('')
+  const [socialAccounts, setSocialAccounts] = useState<SocialAccount[]>([
+    { id: '1', platform: 'instagram', value: '' },
+  ])
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
   const [shippingMethod, setShippingMethod] = useState('jt_manila')
@@ -85,40 +92,67 @@ function BookComponent() {
   // Field validation status checkers
   const isNameValid = (val: string) => val.trim().length >= 2
   const isEmailValid = (val: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())
-  const isSocialValid = (val: string) => val.trim().length >= 2
+  const isSocialValid = socialAccounts.some((acc) => acc.value.trim().length >= 2)
   const isPhoneValid = (val: string) => val.replace(/[\s\-\(\)]/g, '').length >= 10
   const isAddressValid = (val: string) => val.trim().length >= 10
   const isFreebieValid = (val: string) => val.trim().length >= 1
   const isMessageValid = (val: string) => val.trim().length >= 4
 
+  // Social accounts handlers
+  const handleAddSocialAccount = () => {
+    setSocialAccounts((prev) => [
+      ...prev,
+      { id: Date.now().toString(), platform: 'other', value: '' },
+    ])
+  }
+
+  const handleRemoveSocialAccount = (id: string) => {
+    setSocialAccounts((prev) => {
+      if (prev.length <= 1) return prev
+      return prev.filter((acc) => acc.id !== id)
+    })
+  }
+
+  const handleUpdateSocialAccount = (id: string, platform: SocialPlatform, value: string) => {
+    const updated = socialAccounts.map((acc) =>
+      acc.id === id ? { ...acc, platform, value } : acc
+    )
+    setSocialAccounts(updated)
+    setTouched((prev) => ({ ...prev, socialLink: true }))
+    if (updated.some((acc) => acc.value.trim().length >= 2)) {
+      setErrors((prev) => ({ ...prev, socialLink: '' }))
+    }
+  }
+
+  const getFormattedSocialLinks = () => {
+    return socialAccounts
+      .filter((acc) => acc.value.trim().length > 0)
+      .map((acc) => {
+        const url = formatSocialUrl(acc.platform, acc.value)
+        const label = acc.platform.charAt(0).toUpperCase() + acc.platform.slice(1)
+        return `${label}: ${url}`
+      })
+      .join(' | ')
+  }
+
   // Live input handlers with auto-validation feedback
   const handleNameChange = (val: string) => {
     setName(val)
-    setTouched(prev => ({ ...prev, name: true }))
+    setTouched((prev) => ({ ...prev, name: true }))
     if (isNameValid(val)) {
-      setErrors(prev => ({ ...prev, name: '' }))
+      setErrors((prev) => ({ ...prev, name: '' }))
     } else if (touched.name && val.trim().length > 0) {
-      setErrors(prev => ({ ...prev, name: 'Please enter your full name (at least 2 letters).' }))
+      setErrors((prev) => ({ ...prev, name: 'Please enter your full name (at least 2 letters).' }))
     }
   }
 
   const handleEmailChange = (val: string) => {
     setEmail(val)
-    setTouched(prev => ({ ...prev, email: true }))
+    setTouched((prev) => ({ ...prev, email: true }))
     if (isEmailValid(val)) {
-      setErrors(prev => ({ ...prev, email: '' }))
+      setErrors((prev) => ({ ...prev, email: '' }))
     } else if (touched.email && val.includes('@') && val.includes('.')) {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address (e.g. name@gmail.com).' }))
-    }
-  }
-
-  const handleSocialChange = (val: string) => {
-    setSocialLink(val)
-    setTouched(prev => ({ ...prev, socialLink: true }))
-    if (isSocialValid(val)) {
-      setErrors(prev => ({ ...prev, socialLink: '' }))
-    } else if (touched.socialLink && val.trim().length > 0) {
-      setErrors(prev => ({ ...prev, socialLink: 'Social media username is required.' }))
+      setErrors((prev) => ({ ...prev, email: 'Please enter a valid email address (e.g. name@gmail.com).' }))
     }
   }
 
@@ -193,10 +227,8 @@ function BookComponent() {
       errs.email = 'Please enter a valid email address (e.g. name@gmail.com).'
     }
 
-    if (!socialLink.trim()) {
-      errs.socialLink = 'Social media / account username is required.'
-    } else if (!isSocialValid(socialLink)) {
-      errs.socialLink = 'Please enter a valid username or account link.'
+    if (!isSocialValid) {
+      errs.socialLink = 'Please provide at least one social media link or handle so Rosie can contact you.'
     }
 
     setErrors(errs)
@@ -310,7 +342,7 @@ function BookComponent() {
     formData.append('name', name)
     formData.append('pronouns', pronouns)
     formData.append('email', email)
-    formData.append('social_link', socialLink)
+    formData.append('social_link', getFormattedSocialLinks())
     formData.append('phone', phone)
     formData.append('address', address)
     formData.append('shipping_method', shippingMethod)
@@ -345,7 +377,7 @@ function BookComponent() {
     setName('')
     setPronouns('')
     setEmail('')
-    setSocialLink('')
+    setSocialAccounts([{ id: '1', platform: 'instagram', value: '' }])
     setPhone('')
     setAddress('')
     setShippingMethod('jt_manila')
@@ -413,14 +445,16 @@ function BookComponent() {
               name={name}
               pronouns={pronouns}
               email={email}
-              socialLink={socialLink}
+              socialAccounts={socialAccounts}
               isNameValid={isNameValid}
               isEmailValid={isEmailValid}
               isSocialValid={isSocialValid}
               onNameChange={handleNameChange}
               onPronounsChange={setPronouns}
               onEmailChange={handleEmailChange}
-              onSocialChange={handleSocialChange}
+              onAddSocialAccount={handleAddSocialAccount}
+              onRemoveSocialAccount={handleRemoveSocialAccount}
+              onUpdateSocialAccount={handleUpdateSocialAccount}
               errors={errors}
               onBack={handleBack}
               onNext={handleNext}
@@ -478,7 +512,7 @@ function BookComponent() {
               name={name}
               pronouns={pronouns}
               email={email}
-              socialLink={socialLink}
+              socialLink={getFormattedSocialLinks()}
               confirmed={confirmed}
               setConfirmed={setConfirmed}
               errors={errors}

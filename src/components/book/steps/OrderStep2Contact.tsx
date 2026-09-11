@@ -1,34 +1,52 @@
 import React from 'react'
+import {
+  type SocialAccount,
+  type SocialPlatform,
+  formatSocialUrl,
+} from '../types'
 
 interface OrderStep2ContactProps {
   name: string
   pronouns: string
   email: string
-  socialLink: string
+  socialAccounts: SocialAccount[]
   isNameValid: (v: string) => boolean
   isEmailValid: (v: string) => boolean
-  isSocialValid: (v: string) => boolean
+  isSocialValid: boolean
   onNameChange: (v: string) => void
   onPronounsChange: (v: string) => void
   onEmailChange: (v: string) => void
-  onSocialChange: (v: string) => void
+  onAddSocialAccount: () => void
+  onRemoveSocialAccount: (id: string) => void
+  onUpdateSocialAccount: (id: string, platform: SocialPlatform, value: string) => void
   errors: Record<string, string>
   onBack: () => void
   onNext: () => void
 }
 
+const PLATFORMS: { id: SocialPlatform; label: string; icon: string; placeholder: string }[] = [
+  { id: 'instagram', label: 'Instagram', icon: '📷', placeholder: 'e.g. @username or instagram.com/username' },
+  { id: 'tiktok', label: 'TikTok', icon: '🎵', placeholder: 'e.g. @username or tiktok.com/@username' },
+  { id: 'medium', label: 'Medium', icon: '📖', placeholder: 'e.g. @username or medium.com/@username' },
+  { id: 'facebook', label: 'Facebook', icon: '📘', placeholder: 'e.g. facebook.com/profile.name' },
+  { id: 'twitter', label: 'X / Twitter', icon: '🐦', placeholder: 'e.g. @username or x.com/username' },
+  { id: 'other', label: 'Other Link', icon: '🌐', placeholder: 'Paste full profile link...' },
+]
+
 export const OrderStep2Contact: React.FC<OrderStep2ContactProps> = ({
   name,
   pronouns,
   email,
-  socialLink,
+  socialAccounts,
   isNameValid,
   isEmailValid,
   isSocialValid,
   onNameChange,
   onPronounsChange,
   onEmailChange,
-  onSocialChange,
+  onAddSocialAccount,
+  onRemoveSocialAccount,
+  onUpdateSocialAccount,
   errors,
   onBack,
   onNext,
@@ -130,42 +148,109 @@ export const OrderStep2Contact: React.FC<OrderStep2ContactProps> = ({
           )}
         </div>
 
-        {/* Social Media Handle */}
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-bold text-[var(--sea-ink)]">
-              Social Media / Account Username <span className="text-red-500">*</span>
-            </label>
-            {isSocialValid(socialLink) && (
-              <span className="text-xs text-emerald-600 font-bold flex items-center gap-0.5 animate-in fade-in">
+        {/* Social Media Link Selection & Multiple Options */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-white/60 border border-[var(--line)] space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="block text-sm font-bold text-[var(--sea-ink)]">
+                Social Media / Profile Link <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-[var(--sea-ink-soft)] mt-0.5">
+                Provide your profile link or handle so Rosie can easily reach out and confirm your order.
+              </p>
+            </div>
+            {isSocialValid && (
+              <span className="text-xs text-emerald-600 font-bold flex items-center gap-0.5 animate-in fade-in shrink-0">
                 ✓ Connected
               </span>
             )}
           </div>
-          <input
-            type="text"
-            value={socialLink}
-            onChange={(e) => onSocialChange(e.target.value)}
-            className={`w-full px-4 py-3 rounded-xl transition-all ${
-              errors.socialLink
-                ? 'border-2 border-red-400 bg-red-50/20 focus:border-red-500'
-                : isSocialValid(socialLink)
-                ? 'border-2 border-emerald-500/60 bg-emerald-50/10 focus:border-emerald-600'
-                : 'border border-[var(--line)] bg-white/70 focus:border-[var(--lagoon-deep)]'
-            } focus:outline-none`}
-            placeholder="e.g. @yourusername or Instagram profile link"
-          />
-          {errors.socialLink ? (
-            <p className="text-xs text-red-500 font-medium mt-1.5 flex items-center gap-1">
+
+          <div className="space-y-3">
+            {socialAccounts.map((account, index) => {
+              const currentPlatform = PLATFORMS.find((p) => p.id === account.platform) || PLATFORMS[0]
+              const generatedUrl = formatSocialUrl(account.platform, account.value)
+
+              return (
+                <div key={account.id} className="p-3.5 rounded-xl bg-white border border-[var(--line)] shadow-xs space-y-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    {/* Platform Selector */}
+                    <div className="relative shrink-0 sm:w-44">
+                      <select
+                        value={account.platform}
+                        onChange={(e) =>
+                          onUpdateSocialAccount(account.id, e.target.value as SocialPlatform, account.value)
+                        }
+                        className="w-full px-3 py-2.5 rounded-lg border border-[var(--line)] bg-[#faf8f5] text-xs font-bold text-[var(--sea-ink)] focus:outline-none focus:border-[var(--lagoon-deep)] cursor-pointer"
+                      >
+                        {PLATFORMS.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.icon} {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Handle or URL Input */}
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={account.value}
+                        onChange={(e) =>
+                          onUpdateSocialAccount(account.id, account.platform, e.target.value)
+                        }
+                        placeholder={currentPlatform.placeholder}
+                        className="w-full px-3 py-2.5 rounded-lg border border-[var(--line)] bg-white text-xs text-[var(--sea-ink)] focus:outline-none focus:border-[var(--lagoon-deep)]"
+                      />
+                    </div>
+
+                    {/* Remove button if more than 1 account */}
+                    {socialAccounts.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => onRemoveSocialAccount(account.id)}
+                        className="w-8 h-8 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors shrink-0 text-sm"
+                        title="Remove social link"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Clickable URL Preview */}
+                  {generatedUrl && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-[var(--lagoon-deep)] pt-1 pl-1">
+                      <span className="opacity-70">Direct Link for Rosie:</span>
+                      <a
+                        href={generatedUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold underline truncate max-w-[280px] sm:max-w-md hover:opacity-80"
+                      >
+                        {generatedUrl} ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Add Another Link Button */}
+          <div className="flex items-center justify-between pt-2">
+            <button
+              type="button"
+              onClick={onAddSocialAccount}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--lagoon-deep)] hover:text-[var(--sea-ink)] transition-colors py-1 px-3 rounded-full bg-[var(--lagoon)]/10 hover:bg-[var(--lagoon)]/20"
+            >
+              <span>＋</span>
+              <span>Add another social link (optional)</span>
+            </button>
+          </div>
+
+          {errors.socialLink && (
+            <p className="text-xs text-red-500 font-medium flex items-center gap-1">
               <span>⚠️</span> {errors.socialLink}
-            </p>
-          ) : isSocialValid(socialLink) ? (
-            <p className="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
-              <span>✓</span> Username saved!
-            </p>
-          ) : (
-            <p className="text-xs text-[var(--sea-ink-soft)] mt-1">
-              So Rosie can message you directly on Instagram for confirmation.
             </p>
           )}
         </div>

@@ -1,6 +1,11 @@
 import { createServerFn } from '@tanstack/react-start'
 import { supabase } from './supabase'
 import { Resend } from 'resend'
+import {
+  getLocalOrders,
+  saveLocalOrder,
+  updateLocalOrderStatus,
+} from './orders.server'
 
 const resendApiKey = process.env.RESEND_API_KEY || import.meta.env.VITE_RESEND_API_KEY
 const resend = resendApiKey ? new Resend(resendApiKey) : null
@@ -49,18 +54,48 @@ export const submitOrder = createServerFn({ method: 'POST' })
           .upload(filePath, receiptFile)
 
         if (uploadError) {
-          console.warn('Supabase storage upload note (continuing in demo/fallback mode):', uploadError.message)
+          console.warn('Supabase storage upload note (continuing with base64 receipt preview):', uploadError.message)
         } else {
-          const { data } = supabase.storage
+          const { data: urlData } = supabase.storage
             .from('receipts')
             .getPublicUrl(filePath)
-          publicUrl = data?.publicUrl || ''
+          publicUrl = urlData?.publicUrl || ''
         }
       } catch (storageErr: any) {
-        console.warn('Supabase storage exception (continuing in demo/fallback mode):', storageErr?.message || storageErr)
+        console.warn('Supabase storage exception (continuing with base64 receipt preview):', storageErr?.message || storageErr)
       }
 
-      // 2. Insert the order into the database (if table exists)
+      // If Supabase storage didn't provide a public URL yet, generate base64 data URL
+      if (!publicUrl && receiptFile) {
+        try {
+          const arrayBuf = await receiptFile.arrayBuffer()
+          const b64 = Buffer.from(arrayBuf).toString('base64')
+          publicUrl = `data:${receiptFile.type || 'image/png'};base64,${b64}`
+        } catch (bufErr) {
+          console.warn('Receipt data url generation note:', bufErr)
+        }
+      }
+
+      const newOrderRecord: OrderRecord = {
+        id: `ord_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+        created_at: new Date().toISOString(),
+        customer_name: name,
+        pronouns: pronouns || null,
+        email: email,
+        social_link: socialLink || null,
+        phone: phone,
+        address: address,
+        shipping_method: shippingMethod,
+        package_type: packageType,
+        freebie_photocard: freebiePhotocard || null,
+        additional_photocards: additionalPhotocards || null,
+        postcard_message: postcardMessage || null,
+        total_amount: totalAmount,
+        receipt_url: publicUrl || 'demo_receipt_preview',
+        status: 'pending',
+      }
+
+      // 2. Insert the order into the Supabase database
       try {
         const { error: insertError } = await supabase
           .from('orders')
@@ -78,14 +113,16 @@ export const submitOrder = createServerFn({ method: 'POST' })
             postcard_message: postcardMessage || null,
             total_amount: totalAmount,
             receipt_url: publicUrl || 'demo_receipt_preview',
-            status: 'pending' // Default status
+            status: 'pending'
           }])
 
         if (insertError) {
-          console.warn('Supabase database insert note (continuing in demo/fallback mode):', insertError.message)
+          console.warn('Supabase insert note, saving locally as fallback:', insertError.message)
+          saveLocalOrder(newOrderRecord)
         }
       } catch (dbErr: any) {
-        console.warn('Supabase database exception (continuing in demo/fallback mode):', dbErr?.message || dbErr)
+        console.warn('Supabase exception, saving locally as fallback:', dbErr?.message || dbErr)
+        saveLocalOrder(newOrderRecord)
       }
 
       // 3. Send Email Notification via Resend (if configured)
@@ -141,3 +178,70 @@ export const submitOrder = createServerFn({ method: 'POST' })
       return { success: true, demo: true }
     }
   })
+
+export type OrderRecord = {
+  id: string
+  created_at: string
+  customer_name: string
+  pronouns?: string | null
+  email: string
+  social_link?: string | null
+  phone: string
+  address: string
+  shipping_method: string
+  package_type: string
+  freebie_photocard?: string | null
+  additional_photocards?: string | null
+  postcard_message?: string | null
+  total_amount: number
+  receipt_url?: string | null
+  status: 'pending' | 'confirmed' | 'packed' | 'shipped' | 'delivered'
+}
+
+export const getOrders = createServerFn({ method: 'GET' }).handler(async () => {
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.warn('Supabase fetch orders note (falling back to local cache):', error.message)
+      return getLocalOrders()
+    }
+
+    const supabaseOrders = (data || []) as OrderRecord[]
+    if (supabaseOrders.length > 0) {
+      return supabaseOrders
+    }
+
+    return getLocalOrders()
+  } catch (e) {
+    console.warn('Orders fetch caught exception (falling back to local cache):', e)
+    return getLocalOrders()
+  }
+})
+
+export const updateOrderStatus = createServerFn({ method: 'POST' })
+  .validator((input: { id: string; status: string }) => input)
+  .handler(async (ctx: any) => {
+    try {
+      const data = ctx?.data || ctx
+      const { id, status } = data
+      updateLocalOrderStatus(id, status as OrderRecord['status'])
+
+      const { error } = await supabase
+        .from('orders')
+        .update({ status })
+        .eq('id', id)
+
+      if (error) {
+        console.warn('Supabase status update error (updated locally):', error.message)
+      }
+      return { success: true }
+    } catch (e: any) {
+      console.error('Status update failed:', e)
+      return { success: false, error: e.message }
+    }
+  })
+

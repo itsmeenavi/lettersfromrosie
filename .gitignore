@@ -16,3 +16,4 @@ todos.json
 *.sql
 generate_seed.mjs
 src/rosie_posts_with_images.json
+.orders-local.json

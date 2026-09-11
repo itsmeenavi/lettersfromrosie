@@ -168,7 +168,7 @@ export const OrderStep4Package: React.FC<OrderStep4PackageProps> = ({
           <div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-xs font-bold text-[var(--sea-ink)] uppercase tracking-widest opacity-70">
-                Postcard Sample
+                Photocard Sample
               </p>
               <span className="text-[11px] text-[var(--lagoon-deep)] font-medium">🔍 Tap to zoom</span>
             </div>
@@ -181,9 +181,9 @@ export const OrderStep4Package: React.FC<OrderStep4PackageProps> = ({
                 type: 'preview'
               })}
             >
-              <img src="/images/book/photocardsample.png" alt="Postcard Sample" className="w-full group-hover:scale-102 transition-transform duration-300" />
+              <img src="/images/book/photocardsample.png" alt="Photocard Sample" className="w-full group-hover:scale-102 transition-transform duration-300" />
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs font-bold gap-1 backdrop-blur-[1px]">
-                <span>🔍 Click to view postcard sample up close</span>
+                <span>🔍 Click to view photocard sample up close</span>
               </div>
             </div>
           </div>
@@ -245,7 +245,7 @@ export const OrderStep4Package: React.FC<OrderStep4PackageProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-sm font-bold text-[var(--sea-ink)]">
-                Personalized Postcard Topic or Question <span className="text-red-500">*</span>
+                Personalized Photocard Topic or Question <span className="text-red-500">*</span>
               </label>
               {isMessageValid(postcardMessage) && (
                 <span className="text-xs text-emerald-600 font-bold flex items-center gap-0.5 animate-in fade-in">
