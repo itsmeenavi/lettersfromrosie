@@ -7,8 +7,10 @@ import {
   updateLocalOrderStatus,
 } from './orders.server'
 
-const resendApiKey = process.env.RESEND_API_KEY || import.meta.env.VITE_RESEND_API_KEY
-const resend = resendApiKey ? new Resend(resendApiKey) : null
+const getResendClient = () => {
+  const resendApiKey = process.env.RESEND_API_KEY || import.meta.env.VITE_RESEND_API_KEY
+  return resendApiKey ? new Resend(resendApiKey) : null
+}
 
 export const submitOrder = createServerFn({ method: 'POST' })
   .validator((input: any) => {
@@ -126,49 +128,182 @@ export const submitOrder = createServerFn({ method: 'POST' })
       }
 
       // 3. Send Email Notification via Resend (if configured)
-      if (resend) {
+      const resendClient = getResendClient()
+      if (resendClient) {
         try {
           const notificationEmailsStr = process.env.NOTIFICATION_EMAILS || import.meta.env.VITE_NOTIFICATION_EMAILS
           if (notificationEmailsStr) {
-            const emails = notificationEmailsStr.split(',').map((e: string) => e.trim())
+            const emails = notificationEmailsStr.split(',').map((e: string) => e.trim()).filter(Boolean)
 
             const packageLabel = packageType === 'personalized'
               ? 'Personalized Edition (₱699)'
               : 'Standard Edition (₱650)'
 
-            const personalizedDetails = packageType === 'personalized' ? `
-                <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
-                <h3 style="margin: 0 0 8px;">Personalized Edition Details</h3>
-                <p><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Not specified'}</p>
-                <p><strong>Additional Photocards:</strong> ${additionalPhotocards || 'None'}</p>
-                <p><strong>Postcard Message:</strong> ${postcardMessage || 'Not specified'}</p>
-              ` : ''
+            const formatShipping = (m: string) => {
+              switch (m) {
+                case 'jt_manila': return 'J&T Express (Metro Manila)'
+                case 'jt_luzon': return 'J&T Express (Luzon)'
+                case 'jt_visayas': return 'J&T Express (Visayas)'
+                case 'jt_mindanao': return 'J&T Express (Mindanao)'
+                case 'lalamove': return 'Lalamove / Grab (Buyer books)'
+                default: return m
+              }
+            }
 
-            await resend.emails.send({
-              from: 'Orders <onboarding@resend.dev>', // Default resend testing domain
+            const personalizedDetailsHtml = packageType === 'personalized' ? `
+              <div style="margin-top: 20px; padding: 16px 20px; background-color: #fdfaf6; border-left: 4px solid #d9777f; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px; color: #43282b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">✨ Personalized Edition Details</h4>
+                <p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Not specified'}</p>
+                ${additionalPhotocards ? `<p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Additional Photocards:</strong> ${additionalPhotocards}</p>` : ''}
+                ${postcardMessage ? `
+                  <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e8ded4;">
+                    <strong style="font-size: 12px; color: #8c6d70; text-transform: uppercase;">Message for Rosie's handwritten postcard:</strong>
+                    <p style="margin: 6px 0 0; font-size: 14px; font-style: italic; color: #2c2525; line-height: 1.5; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #ebdcd5;">
+                      "${postcardMessage.replace(/\n/g, '<br/>')}"
+                    </p>
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''
+
+            const fromEmail = process.env.RESEND_FROM_EMAIL || 'Letters from Rosie <orders@lettersfromrosie.com>'
+            const emailHtml = `
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>New Order from ${name}</title>
+              </head>
+              <body style="margin: 0; padding: 24px 12px; background-color: #f7f3ee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2c3e50;">
+                <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
+                  
+                  <!-- Top Header Banner -->
+                  <div style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
+                    <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
+                      Letters from Rosie
+                    </span>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px;">
+                      🌸 New Book Pre-Order Received!
+                    </h1>
+                    <p style="margin: 8px 0 0; font-size: 13px; color: #ebdcd5; opacity: 0.9;">
+                      The Art of Living at Your Own Pace
+                    </p>
+                  </div>
+
+                  <!-- Main Content Area -->
+                  <div style="padding: 28px;">
+                    
+                    <!-- Quick Highlight Cards -->
+                    <div style="display: flex; gap: 12px; margin-bottom: 24px; background: #faf8f5; border-radius: 12px; padding: 16px; border: 1px solid #ebdcd5;">
+                      <div style="flex: 1;">
+                        <span style="font-size: 11px; font-weight: 700; color: #8c6d70; text-transform: uppercase; letter-spacing: 0.5px;">Book Edition</span>
+                        <div style="font-size: 15px; font-weight: 700; color: #2c3e50; margin-top: 4px;">
+                          ${packageType === 'personalized' ? '✨ Personalized Edition' : '📖 Standard Edition'}
+                        </div>
+                      </div>
+                      <div style="text-align: right;">
+                        <span style="font-size: 11px; font-weight: 700; color: #8c6d70; text-transform: uppercase; letter-spacing: 0.5px;">Total Paid</span>
+                        <div style="font-size: 18px; font-weight: 800; color: #0c4a6e; margin-top: 2px;">
+                          ₱${totalAmount.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Customer Contact Details -->
+                    <h3 style="margin: 0 0 14px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b; border-bottom: 1px solid #ebdcd5; padding-bottom: 8px;">
+                      👤 Recipient Information
+                    </h3>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+                      <tr>
+                        <td style="padding: 6px 0; color: #8c6d70; width: 120px;"><strong>Name:</strong></td>
+                        <td style="padding: 6px 0; color: #2c3e50; font-weight: 600;">${name} ${pronouns ? `<span style="font-weight: 400; color: #8c6d70;">(${pronouns})</span>` : ''}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #8c6d70;"><strong>Email:</strong></td>
+                        <td style="padding: 6px 0;"><a href="mailto:${email}" style="color: #0c4a6e; text-decoration: none; font-weight: 500;">${email}</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #8c6d70;"><strong>Contact No.:</strong></td>
+                        <td style="padding: 6px 0;"><a href="tel:${phone}" style="color: #2c3e50; text-decoration: none;">${phone}</a></td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #8c6d70;"><strong>Social Link:</strong></td>
+                        <td style="padding: 6px 0; color: #2c3e50;">${socialLink}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #8c6d70; vertical-align: top;"><strong>Delivery Address:</strong></td>
+                        <td style="padding: 6px 0; color: #2c3e50;">
+                          ${address.replace(/\n/g, '<br/>')}
+                          <div style="font-size: 12px; color: #8c6d70; margin-top: 4px;">Via ${formatShipping(shippingMethod)}</div>
+                        </td>
+                      </tr>
+                    </table>
+
+                    ${personalizedDetailsHtml}
+
+                    <!-- Action Buttons -->
+                    <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #ebdcd5; text-align: center;">
+                      ${publicUrl && publicUrl !== 'demo_receipt_preview' ? `
+                        <a href="${publicUrl}" target="_blank" style="display: inline-block; padding: 12px 24px; background: #0c4a6e; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px; margin-right: 8px; margin-bottom: 8px;">
+                          🔍 View Payment Receipt
+                        </a>
+                      ` : ''}
+                      <a href="https://www.lettersfromrosie.com/dashboard" target="_blank" style="display: inline-block; padding: 12px 24px; background: #43282b; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px; margin-bottom: 8px;">
+                        🌸 Open Creator Dashboard
+                      </a>
+                    </div>
+
+                  </div>
+
+                  <!-- Footer -->
+                  <div style="background: #faf8f5; padding: 20px 24px; text-align: center; font-size: 12px; color: #8c6d70; border-top: 1px solid #ebdcd5;">
+                    <p style="margin: 0 0 4px;">This is an automated order alert from <strong>Letters from Rosie</strong>.</p>
+                    <p style="margin: 0;"><a href="https://www.lettersfromrosie.com" style="color: #8c6d70; text-decoration: underline;">lettersfromrosie.com</a></p>
+                  </div>
+
+                </div>
+              </body>
+              </html>
+            `
+
+            const { data: resendData, error: sendError } = await resendClient.emails.send({
+              from: fromEmail,
               to: emails,
               subject: `🎉 New Order from ${name}!`,
-              html: `
-                <h2>New Book Order Received!</h2>
-                <p><strong>Customer:</strong> ${name} ${pronouns ? `(${pronouns})` : ''}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Social Media:</strong> ${socialLink}</p>
-                <p><strong>Phone:</strong> ${phone}</p>
-                <p><strong>Package:</strong> ${packageLabel}</p>
-                <p><strong>Total Paid:</strong> ₱${totalAmount.toFixed(2)}</p>
-                <p><strong>Shipping:</strong> ${shippingMethod}</p>
-                <p><strong>Address:</strong><br/>${address.replace(/\n/g, '<br/>')}</p>
-                ${personalizedDetails}
-                <br/>
-                <p><a href="${publicUrl || '#'}" target="_blank">View Payment Receipt Screenshot</a></p>
-              `
+              html: emailHtml,
             })
+
+            if (sendError) {
+              console.warn('Resend batch delivery warning (testing mode active):', sendError.message)
+              // If batch failed because testing domain only allows the account owner's email, try each address individually
+              for (const singleEmail of emails) {
+                try {
+                  const { error: singleErr } = await resendClient.emails.send({
+                    from: fromEmail,
+                    to: [singleEmail],
+                    subject: `🎉 New Order from ${name}!`,
+                    html: emailHtml,
+                  })
+                  if (singleErr) {
+                    console.warn(`Could not deliver to ${singleEmail} (test mode requires verified domain):`, singleErr.message)
+                  } else {
+                    console.log(`Successfully delivered email notification to ${singleEmail}!`)
+                  }
+                } catch (e: any) {
+                  console.warn(`Resend single send exception to ${singleEmail}:`, e?.message || e)
+                }
+              }
+            } else {
+              console.log('Resend email notification sent successfully to all recipients:', resendData)
+            }
           }
         } catch (resendErr: any) {
-          console.warn('Resend email delivery note (continuing in demo/fallback mode):', resendErr?.message || resendErr)
+          console.warn('Resend email delivery exception:', resendErr?.message || resendErr)
         }
       } else {
-        console.log('Resend is not configured yet (no RESEND_API_KEY found). Skipping email dispatch — order saved in preview/demo mode.')
+        console.log('Resend is not configured yet (no RESEND_API_KEY found). Skipping email dispatch.')
       }
 
       return { success: true }
