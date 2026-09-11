@@ -6,7 +6,18 @@ import Header from '../components/Header'
 
 import appCss from '../styles.css?url'
 
-const THEME_INIT_SCRIPT = `(function(){try{var root=document.documentElement;root.classList.remove('dark');root.classList.add('light');root.setAttribute('data-theme','light');root.style.colorScheme='light';}catch(e){}})();`
+const THEME_INIT_SCRIPT = `(function(){
+  try{
+    var root=document.documentElement;
+    root.classList.remove('dark');
+    root.classList.add('light');
+    root.setAttribute('data-theme','light');
+    root.style.colorScheme='light';
+  }catch(e){}
+  window.addEventListener('vite:preloadError', function(){
+    window.location.reload();
+  });
+})();`
 
 export const Route = createRootRoute({
   head: () => ({
