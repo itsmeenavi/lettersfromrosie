@@ -23,7 +23,7 @@ function RouteComponent() {
       <section className="mb-24 flex flex-col items-center justify-center text-center">
         <div className="mb-8 overflow-hidden rounded-full border-4 border-[var(--cloud-pink)] shadow-[0_10px_30px_rgba(90,40,60,0.1)] h-40 w-40 bg-[var(--surface-strong)] flex items-center justify-center">
           <img 
-            src="/rosie5.jpg" 
+            src="/rosie6.jpg" 
             alt="Rosie" 
             className="h-full w-full object-cover" 
             onError={(e) => {
