@@ -4,6 +4,7 @@ import type { OrderRecord } from '../../lib/orders'
 interface OrderCardProps {
   order: OrderRecord
   onStatusChange: (id: string, newStatus: OrderRecord['status']) => void
+  onNotifyCustomer: (id: string, status: string, customer_name: string, email: string) => void
   onZoomReceipt: (url: string, title: string) => void
 }
 
@@ -78,9 +79,11 @@ function parseSocialLinks(raw: string | null | undefined): ParsedSocialLink[] {
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
   onStatusChange,
+  onNotifyCustomer,
   onZoomReceipt,
 }) => {
   const [copied, setCopied] = useState(false)
+  const [isNotifying, setIsNotifying] = useState(false)
   const socialLinks = parseSocialLinks(order.social_link)
 
   const handleCopyAddress = () => {
@@ -96,8 +99,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         return 'bg-amber-100 text-amber-800 border-amber-300'
       case 'confirmed':
         return 'bg-emerald-100 text-emerald-800 border-emerald-300'
-      case 'packed':
-        return 'bg-blue-100 text-blue-800 border-blue-300'
+      case 'printing':
+        return 'bg-indigo-100 text-indigo-800 border-indigo-300'
+      case 'preparing':
+        return 'bg-pink-100 text-pink-800 border-pink-300'
       case 'shipped':
         return 'bg-purple-100 text-purple-800 border-purple-300'
       case 'delivered':
@@ -151,22 +156,48 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             </p>
           </div>
 
-          {/* Status Dropdown */}
-          <div className="flex items-center gap-2">
-            <span className={`text-xs font-bold px-3 py-1 rounded-full border capitalize ${getStatusBadgeColor(order.status)}`}>
-              {order.status}
-            </span>
-            <select
-              value={order.status}
-              onChange={(e) => onStatusChange(order.id, e.target.value as OrderRecord['status'])}
-              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--line)] bg-white text-[var(--sea-ink)] focus:outline-none focus:border-[var(--lagoon-deep)] cursor-pointer"
-            >
-              <option value="pending">Mark Pending</option>
-              <option value="confirmed">Mark Confirmed</option>
-              <option value="packed">Mark Packed</option>
-              <option value="shipped">Mark Shipped</option>
-              <option value="delivered">Mark Delivered</option>
-            </select>
+          {/* Status Dropdown & Notify Button */}
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2">
+              <span className={`text-xs font-bold px-3 py-1 rounded-full border capitalize ${getStatusBadgeColor(order.status)}`}>
+                {order.status}
+              </span>
+              <select
+                value={order.status}
+                onChange={(e) => onStatusChange(order.id, e.target.value as OrderRecord['status'])}
+                className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--line)] bg-white text-[var(--sea-ink)] focus:outline-none focus:border-[var(--lagoon-deep)] cursor-pointer"
+              >
+                <option value="pending">Mark Pending</option>
+                <option value="confirmed">Mark Confirmed</option>
+                <option value="printing">Mark Printing (9-10 Days)</option>
+                <option value="preparing">Mark Preparing & Packing</option>
+                <option value="shipped">Mark Shipped</option>
+                <option value="delivered">Mark Delivered</option>
+              </select>
+            </div>
+            
+            {order.status !== 'pending' && (
+              <button
+                type="button"
+                disabled={order.notified_status === order.status || isNotifying}
+                onClick={async () => {
+                  setIsNotifying(true)
+                  await onNotifyCustomer(order.id, order.status, order.customer_name, order.email)
+                  setIsNotifying(false)
+                }}
+                className={`text-[10px] font-bold px-2 py-1 rounded transition-all border ${
+                  order.notified_status === order.status
+                    ? 'bg-gray-50 text-gray-400 border-transparent cursor-not-allowed'
+                    : 'bg-[var(--sea-ink)] text-white hover:opacity-90 border-transparent'
+                }`}
+              >
+                {isNotifying
+                  ? 'Sending...'
+                  : order.notified_status === order.status
+                  ? '✓ Customer Notified'
+                  : '✉️ Send Update Email'}
+              </button>
+            )}
           </div>
         </div>
 

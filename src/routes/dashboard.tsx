@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
 import { useServerFn } from '@tanstack/react-start'
-import { getOrders, updateOrderStatus, type OrderRecord } from '../lib/orders'
+import { getOrders, updateOrderStatus, sendNotificationEmail, type OrderRecord } from '../lib/orders'
 import { OrderCard } from '../components/dashboard/OrderCard'
 import { MOCK_ORDERS } from '../components/dashboard/mockOrders'
 
@@ -27,9 +27,12 @@ function DashboardComponent() {
   const getOrdersFn = useServerFn(getOrders)
   const updateStatusFn = useServerFn(updateOrderStatus)
 
+  const sendNotificationFn = useServerFn(sendNotificationEmail)
+
   // Auth Gate state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const [passcode, setPasscode] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
 
   // Orders state
@@ -55,20 +58,21 @@ function DashboardComponent() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    // Simple passcode check (default: rosie or rosie2024)
-    if (passcode.trim().toLowerCase() === 'rosie' || passcode.trim().toLowerCase() === 'rosie2024') {
+    // Mock login check
+    if (username.trim().toLowerCase() === 'rosie' && password === 'rosie') {
       setIsAuthenticated(true)
       sessionStorage.setItem('rosie_dashboard_auth', 'true')
       setAuthError('')
     } else {
-      setAuthError('Incorrect passcode. Try "rosie"')
+      setAuthError('Incorrect username or password.')
     }
   }
 
   const handleLogout = () => {
     sessionStorage.removeItem('rosie_dashboard_auth')
     setIsAuthenticated(false)
-    setPasscode('')
+    setUsername('')
+    setPassword('')
   }
 
   const handleRefresh = async () => {
@@ -99,6 +103,22 @@ function DashboardComponent() {
       } catch (err) {
         console.error('Failed to update status in database:', err)
       }
+    }
+  }
+
+  const handleNotifyCustomer = async (orderId: string, status: string, customer_name: string, email: string) => {
+    try {
+      const res = await sendNotificationFn({ data: { id: orderId, status, customer_name, email } })
+      if (res.success) {
+        setOrders((prev) =>
+          prev.map((ord) => (ord.id === orderId ? { ...ord, notified_status: status } : ord))
+        )
+      } else {
+        console.error('Failed to send notification:', res.error)
+        alert('Failed to send email notification: ' + res.error)
+      }
+    } catch (err) {
+      console.error('Failed to send notification:', err)
     }
   }
 
@@ -150,17 +170,24 @@ function DashboardComponent() {
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            <div>
+            <div className="flex flex-col gap-3">
               <input
-                type="password"
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                placeholder="Enter passcode (e.g. rosie)"
-                className="w-full px-4 py-3 rounded-xl border border-[var(--line)] bg-white text-center text-lg tracking-wider focus:outline-none focus:border-[var(--lagoon-deep)] shadow-inner"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                className="w-full px-4 py-3 rounded-xl border border-[var(--line)] bg-white text-center text-lg focus:outline-none focus:border-[var(--lagoon-deep)] shadow-inner"
                 autoFocus
               />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="w-full px-4 py-3 rounded-xl border border-[var(--line)] bg-white text-center text-lg tracking-wider focus:outline-none focus:border-[var(--lagoon-deep)] shadow-inner"
+              />
               {authError && (
-                <p className="text-xs text-red-500 font-medium mt-2">
+                <p className="text-xs text-red-500 font-medium mt-1">
                   ⚠️ {authError}
                 </p>
               )}
@@ -175,7 +202,7 @@ function DashboardComponent() {
           </form>
 
           <p className="text-[11px] text-[var(--sea-ink-soft)] mt-6">
-            Default passcode: <span className="font-mono font-bold text-[var(--sea-ink)]">rosie</span>
+            Mock credentials: Username: <span className="font-mono font-bold text-[var(--sea-ink)]">rosie</span> | Password: <span className="font-mono font-bold text-[var(--sea-ink)]">rosie</span>
           </p>
         </div>
       </main>
@@ -340,7 +367,7 @@ function DashboardComponent() {
         {/* Status Pill Filters */}
         <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[var(--line)]">
           <span className="text-xs text-[var(--sea-ink-soft)] mr-2 font-medium">Status:</span>
-          {['all', 'pending', 'confirmed', 'packed', 'shipped', 'delivered'].map((st) => (
+          {['all', 'pending', 'confirmed', 'printing', 'preparing', 'shipped', 'delivered'].map((st) => (
             <button
               key={st}
               type="button"
@@ -365,6 +392,7 @@ function DashboardComponent() {
               key={order.id}
               order={order}
               onStatusChange={handleStatusChange}
+              onNotifyCustomer={handleNotifyCustomer}
               onZoomReceipt={(url, title) => setReceiptModal({ url, title })}
             />
           ))}

@@ -3,7 +3,7 @@ import type { OrderRecord } from '../../lib/orders'
 export const MOCK_ORDERS: OrderRecord[] = [
   {
     id: 'sample-101',
-    created_at: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
+    created_at: '2024-10-24T10:30:00.000Z',
     customer_name: 'Angela Villanueva',
     pronouns: 'she/her',
     email: 'angela.v@gmail.com',
@@ -21,7 +21,7 @@ export const MOCK_ORDERS: OrderRecord[] = [
   },
   {
     id: 'sample-102',
-    created_at: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    created_at: '2024-10-24T08:00:00.000Z',
     customer_name: 'Bea Mae Soriano',
     pronouns: 'she/her',
     email: 'beamae@yahoo.com',
@@ -39,7 +39,7 @@ export const MOCK_ORDERS: OrderRecord[] = [
   },
   {
     id: 'sample-103',
-    created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    created_at: '2024-10-23T10:30:00.000Z',
     customer_name: 'Carlos Miguel Reyes',
     pronouns: 'he/him',
     email: 'carlos.reyes@outlook.com',

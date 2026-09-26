@@ -299,6 +299,131 @@ export const submitOrder = createServerFn({ method: 'POST' })
               console.log('Resend email notification sent successfully to all recipients:', resendData)
             }
           }
+
+          // 4. Send Order Confirmation & Receipt Directly to the Buyer
+          try {
+            const customerEmailHtml = `
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Pre-Order Confirmation — Letters from Rosie</title>
+              </head>
+              <body style="margin: 0; padding: 24px 12px; background-color: #f7f3ee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2c3e50;">
+                <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
+                  
+                  <!-- Top Banner -->
+                  <div style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
+                    <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
+                      Letters from Rosie
+                    </span>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px;">
+                      Thank you for your pre-order! 🌸
+                    </h1>
+                    <p style="margin: 8px 0 0; font-size: 13px; color: #ebdcd5; opacity: 0.9;">
+                      The Art of Living at Your Own Pace
+                    </p>
+                  </div>
+
+                  <!-- Content -->
+                  <div style="padding: 28px;">
+                    <p style="font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: #2c3e50;">
+                      Hi <strong>${name}</strong>,
+                    </p>
+                    <p style="font-size: 14px; line-height: 1.6; margin: 0 0 20px; color: #4a383a;">
+                      Thank you so much for ordering my book! Your copy of <em>The Art of Living at Your Own Pace</em> has been reserved. We have received your payment screenshot and are currently verifying it.
+                    </p>
+
+                    <!-- Order Summary Box -->
+                    <div style="background: #faf8f5; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
+                      <h3 style="margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #8c6d70; border-bottom: 1px solid #ebdcd5; padding-bottom: 6px;">
+                        📋 Pre-Order Summary
+                      </h3>
+                      <table style="width: 100%; font-size: 13px; line-height: 1.6; border-collapse: collapse;">
+                        <tr>
+                          <td style="padding: 4px 0; color: #8c6d70; width: 130px;"><strong>Edition:</strong></td>
+                          <td style="padding: 4px 0; font-weight: 700; color: #2c3e50;">${packageType === 'personalized' ? '✨ Personalized Edition (Signed copy + Postcard + Photocard + Bookmark)' : '📖 Standard Edition (Signed copy + Bookmark)'}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 4px 0; color: #8c6d70;"><strong>Total Paid:</strong></td>
+                          <td style="padding: 4px 0; font-weight: 800; color: #0c4a6e; font-size: 15px;">₱${totalAmount.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 4px 0; color: #8c6d70;"><strong>Delivery Address:</strong></td>
+                          <td style="padding: 4px 0; color: #2c3e50;">${address.replace(/\n/g, ', ')}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 4px 0; color: #8c6d70;"><strong>Shipping:</strong></td>
+                          <td style="padding: 4px 0; color: #2c3e50;">${formatShipping(shippingMethod)}</td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    ${packageType === 'personalized' ? `
+                      <div style="margin-bottom: 24px; padding: 16px; background-color: #fdfaf6; border-left: 4px solid #d9777f; border-radius: 8px;">
+                        <h4 style="margin: 0 0 8px; color: #43282b; font-size: 13px; text-transform: uppercase;">✨ Your Custom Details</h4>
+                        <p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Standard'}</p>
+                        ${additionalPhotocards ? `<p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Additional Photocards:</strong> ${additionalPhotocards}</p>` : ''}
+                        ${postcardMessage ? `
+                          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ebdcd5;">
+                            <span style="font-size: 11px; color: #8c6d70; text-transform: uppercase; font-weight: 700;">Your note for Rosie's postcard:</span>
+                            <p style="margin: 4px 0 0; font-size: 13px; font-style: italic; color: #2c3e50;">"${postcardMessage.replace(/\n/g, '<br/>')}"</p>
+                          </div>
+                        ` : ''}
+                      </div>
+                    ` : ''}
+
+                    <!-- What's Next Steps -->
+                    <div style="background: #fdfaf6; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
+                      <h4 style="margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b;">
+                        📦 What Happens Next?
+                      </h4>
+                      <ol style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: #4a383a;">
+                        <li><strong>Payment Verification:</strong> We will verify your payment screenshot against bank/GCash records.</li>
+                        <li><strong>Book Signing & Packaging:</strong> Rosie will hand-sign your copy and carefully prepare your parcel with your goodies.</li>
+                        <li><strong>Courier Dispatch:</strong> Once your parcel is picked up, you will receive courier updates so you can track your delivery.</li>
+                      </ol>
+                    </div>
+
+                    <!-- Note & Support -->
+                    <p style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
+                      If you have any questions, need to update your contact number or delivery address, simply reply directly to this email or send a DM on Instagram 
+                      <a href="https://instagram.com/lettersfromrosie" target="_blank" style="color: #0c4a6e; text-decoration: none; font-weight: 600;">@lettersfromrosie</a>.
+                    </p>
+
+                    <div style="text-align: center; margin-top: 24px;">
+                      <a href="https://www.lettersfromrosie.com" target="_blank" style="display: inline-block; padding: 12px 28px; background: #43282b; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px;">
+                        Visit Letters from Rosie 🌸
+                      </a>
+                    </div>
+
+                  </div>
+
+                  <!-- Footer -->
+                  <div style="background: #faf8f5; padding: 20px 24px; text-align: center; font-size: 12px; color: #8c6d70; border-top: 1px solid #ebdcd5;">
+                    <p style="margin: 0 0 4px;">With heartfelt love and gratitude,</p>
+                    <p style="margin: 0 0 8px; font-weight: 700; color: #43282b; font-size: 14px;">Rosie (Roselyn Mariano)</p>
+                    <p style="margin: 0;"><a href="https://www.lettersfromrosie.com" style="color: #8c6d70; text-decoration: underline;">lettersfromrosie.com</a></p>
+                  </div>
+
+                </div>
+              </body>
+              </html>
+            `
+
+            const fromSender = process.env.RESEND_FROM_EMAIL || 'Letters from Rosie <orders@lettersfromrosie.com>'
+            const customerRes = await resendClient.emails.send({
+              from: fromSender,
+              to: [email],
+              replyTo: 'orders@lettersfromrosie.com',
+              subject: `🌸 Your Pre-Order Confirmation — The Art of Living at Your Own Pace`,
+              html: customerEmailHtml,
+            })
+            console.log(`Confirmation receipt sent to customer (${email}):`, customerRes)
+          } catch (custErr: any) {
+            console.warn(`Customer confirmation email exception to ${email}:`, custErr?.message || custErr)
+          }
         } catch (resendErr: any) {
           console.warn('Resend email delivery exception:', resendErr?.message || resendErr)
         }
@@ -330,7 +455,8 @@ export type OrderRecord = {
   postcard_message?: string | null
   total_amount: number
   receipt_url?: string | null
-  status: 'pending' | 'confirmed' | 'packed' | 'shipped' | 'delivered'
+  status: 'pending' | 'confirmed' | 'printing' | 'preparing' | 'shipped' | 'delivered'
+  notified_status?: string | null
 }
 
 export const getOrders = createServerFn({ method: 'GET' }).handler(async () => {
@@ -376,6 +502,111 @@ export const updateOrderStatus = createServerFn({ method: 'POST' })
       return { success: true }
     } catch (e: any) {
       console.error('Status update failed:', e)
+      return { success: false, error: e.message }
+    }
+  })
+
+export const sendNotificationEmail = createServerFn({ method: 'POST' })
+  .validator((input: { id: string; status: string; customer_name: string; email: string }) => input)
+  .handler(async (ctx: any) => {
+    const data = ctx?.data || ctx
+    const { id, status, customer_name, email } = data
+    const resendClient = getResendClient()
+
+    if (!resendClient) {
+      return { success: false, error: 'Resend API key not configured' }
+    }
+
+    try {
+      let subject = ''
+      let message = ''
+
+      switch (status) {
+        case 'confirmed':
+          subject = '🌸 Your payment is verified!'
+          message = `Great news! Your payment has been verified. Rosie has added your copy to the next batch.`
+          break
+        case 'printing':
+          subject = '🖨️ Your book is currently being printed!'
+          message = `Your book has been ordered from the printers! It usually takes 9-10 days to arrive at Rosie's desk. Thank you for your patience.`
+          break
+        case 'preparing':
+          subject = '✨ Rosie is preparing your order!'
+          message = `The books have arrived! Rosie is currently hand-signing your copy and packing it with your custom inclusions and postcards.`
+          break
+        case 'shipped':
+          subject = '🚚 Your book is on its way!'
+          message = `Your beautifully wrapped parcel has been handed over to the courier and is on its way to you!`
+          break
+        case 'delivered':
+          subject = '💌 Your book has been delivered!'
+          message = `Your book has arrived! We hope you love reading *The Art of Living at Your Own Pace*. Thank you for supporting Rosie!`
+          break
+        default:
+          return { success: false, error: 'Invalid status for notification' }
+      }
+
+      const emailHtml = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subject}</title>
+        </head>
+        <body style="margin: 0; padding: 24px 12px; background-color: #f7f3ee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2c3e50;">
+          <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
+            <div style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
+              <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
+                Letters from Rosie
+              </span>
+              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px;">
+                Pre-Order Update 🌸
+              </h1>
+            </div>
+            <div style="padding: 28px;">
+              <p style="font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: #2c3e50;">
+                Hi <strong>${customer_name}</strong>,
+              </p>
+              <p style="font-size: 15px; line-height: 1.6; margin: 0 0 20px; color: #4a383a;">
+                ${message}
+              </p>
+              <p style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
+                If you have any questions, simply reply directly to this email or send a DM on Instagram 
+                <a href="https://instagram.com/lettersfromrosie" target="_blank" style="color: #0c4a6e; text-decoration: none; font-weight: 600;">@lettersfromrosie</a>.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+
+      const fromSender = process.env.RESEND_FROM_EMAIL || 'Letters from Rosie <orders@lettersfromrosie.com>'
+      const { error } = await resendClient.emails.send({
+        from: fromSender,
+        to: [email],
+        subject: subject,
+        html: emailHtml,
+      })
+
+      if (error) {
+        console.error('Failed to send notification email:', error)
+        return { success: false, error: error.message }
+      }
+
+      // Update the notified_status in Supabase
+      const { error: dbError } = await supabase
+        .from('orders')
+        .update({ notified_status: status })
+        .eq('id', id)
+
+      if (dbError) {
+        console.warn('Failed to update notified_status in DB:', dbError.message)
+      }
+
+      return { success: true }
+    } catch (e: any) {
+      console.error('Send notification failed:', e)
       return { success: false, error: e.message }
     }
   })
