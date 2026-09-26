@@ -151,14 +151,14 @@ export const submitOrder = createServerFn({ method: 'POST' })
             }
 
             const personalizedDetailsHtml = packageType === 'personalized' ? `
-              <div style="margin-top: 20px; padding: 16px 20px; background-color: #fdfaf6; border-left: 4px solid #d9777f; border-radius: 8px;">
-                <h4 style="margin: 0 0 10px; color: #43282b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">✨ Personalized Edition Details</h4>
-                <p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Not specified'}</p>
-                ${additionalPhotocards ? `<p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Additional Photocards:</strong> ${additionalPhotocards}</p>` : ''}
+              <div class="bg-accent border-subtle" style="margin-top: 20px; padding: 16px 20px; background-color: #fdfaf6; border-left: 4px solid #d9777f; border-radius: 8px;">
+                <h4 class="text-main" style="margin: 0 0 10px; color: #43282b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">✨ Personalized Edition Details</h4>
+                <p class="text-main" style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Not specified'}</p>
+                ${additionalPhotocards ? `<p class="text-main" style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Additional Photocards:</strong> ${additionalPhotocards}</p>` : ''}
                 ${postcardMessage ? `
-                  <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e8ded4;">
-                    <strong style="font-size: 12px; color: #8c6d70; text-transform: uppercase;">Message for Rosie's handwritten postcard:</strong>
-                    <p style="margin: 6px 0 0; font-size: 14px; font-style: italic; color: #2c2525; line-height: 1.5; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #ebdcd5;">
+                  <div class="border-subtle" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e8ded4;">
+                    <strong class="text-muted" style="font-size: 12px; color: #8c6d70; text-transform: uppercase;">Message for Rosie's handwritten postcard:</strong>
+                    <p class="text-main bg-subtle border-subtle" style="margin: 6px 0 0; font-size: 14px; font-style: italic; color: #2c2525; line-height: 1.5; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #ebdcd5;">
                       "${postcardMessage.replace(/\n/g, '<br/>')}"
                     </p>
                   </div>
@@ -173,70 +173,87 @@ export const submitOrder = createServerFn({ method: 'POST' })
               <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta name="color-scheme" content="light dark">
+                <meta name="supported-color-schemes" content="light dark">
                 <title>New Order from ${name}</title>
+                <style>
+                  :root { color-scheme: light dark; supported-color-schemes: light dark; }
+                  @media (prefers-color-scheme: dark) {
+                    body { background-color: #1a1a1a !important; }
+                    .email-container { background-color: #242424 !important; border-color: #333 !important; }
+                    .text-main { color: #f0f0f0 !important; }
+                    .text-muted { color: #a0a0a0 !important; }
+                    .text-brand { color: #93c5fd !important; }
+                    .bg-subtle { background-color: #2a2a2a !important; border-color: #333 !important; }
+                    .bg-accent { background-color: #2c2122 !important; border-color: #4a383a !important; }
+                    .border-subtle { border-color: #333 !important; }
+                    .header-banner { background: linear-gradient(135deg, #2a181a 0%, #1a1012 100%) !important; }
+                    td { color: #f0f0f0 !important; }
+                    a { color: #93c5fd !important; }
+                  }
+                </style>
               </head>
               <body style="margin: 0; padding: 24px 12px; background-color: #f7f3ee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2c3e50;">
-                <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
+                <div class="email-container" style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
                   
                   <!-- Top Header Banner -->
-                  <div style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
+                  <div class="header-banner" style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
                     <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
                       Letters from Rosie
                     </span>
                     <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px;">
-                      🌸 New Book Pre-Order Received!
+                      🌸 New Book Pre-Order!
                     </h1>
-                    <p style="margin: 8px 0 0; font-size: 13px; color: #ebdcd5; opacity: 0.9;">
-                      The Art of Living at Your Own Pace
-                    </p>
                   </div>
 
                   <!-- Main Content Area -->
                   <div style="padding: 28px;">
                     
-                    <!-- Quick Highlight Cards -->
-                    <div style="display: flex; gap: 12px; margin-bottom: 24px; background: #faf8f5; border-radius: 12px; padding: 16px; border: 1px solid #ebdcd5;">
-                      <div style="flex: 1;">
-                        <span style="font-size: 11px; font-weight: 700; color: #8c6d70; text-transform: uppercase; letter-spacing: 0.5px;">Book Edition</span>
-                        <div style="font-size: 15px; font-weight: 700; color: #2c3e50; margin-top: 4px;">
-                          ${packageType === 'personalized' ? '✨ Personalized Edition' : '📖 Standard Edition'}
-                        </div>
-                      </div>
-                      <div style="text-align: right;">
-                        <span style="font-size: 11px; font-weight: 700; color: #8c6d70; text-transform: uppercase; letter-spacing: 0.5px;">Total Paid</span>
-                        <div style="font-size: 18px; font-weight: 800; color: #0c4a6e; margin-top: 2px;">
-                          ₱${totalAmount.toFixed(2)}
-                        </div>
-                      </div>
-                    </div>
+                    <!-- Quick Highlight Cards (Table layout instead of flex for email support) -->
+                    <table class="bg-subtle border-subtle" style="width: 100%; border-collapse: collapse; margin-bottom: 24px; background: #faf8f5; border-radius: 12px; border: 1px solid #ebdcd5;">
+                      <tr>
+                        <td style="padding: 16px; width: 50%; vertical-align: top;">
+                          <div class="text-muted" style="font-size: 11px; font-weight: 700; color: #8c6d70; text-transform: uppercase; letter-spacing: 0.5px;">Book Edition</div>
+                          <div class="text-main" style="font-size: 15px; font-weight: 700; color: #2c3e50; margin-top: 4px;">
+                            ${packageType === 'personalized' ? '✨ Personalized Edition' : '📖 Standard Edition'}
+                          </div>
+                        </td>
+                        <td style="padding: 16px; width: 50%; vertical-align: top; text-align: right;">
+                          <div class="text-muted" style="font-size: 11px; font-weight: 700; color: #8c6d70; text-transform: uppercase; letter-spacing: 0.5px;">Total Paid</div>
+                          <div class="text-brand" style="font-size: 18px; font-weight: 800; color: #0c4a6e; margin-top: 2px;">
+                            ₱${totalAmount.toFixed(2)}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
 
                     <!-- Customer Contact Details -->
-                    <h3 style="margin: 0 0 14px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b; border-bottom: 1px solid #ebdcd5; padding-bottom: 8px;">
+                    <h3 class="text-main border-subtle" style="margin: 0 0 14px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b; border-bottom: 1px solid #ebdcd5; padding-bottom: 8px;">
                       👤 Recipient Information
                     </h3>
 
                     <table style="width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
                       <tr>
-                        <td style="padding: 6px 0; color: #8c6d70; width: 120px;"><strong>Name:</strong></td>
-                        <td style="padding: 6px 0; color: #2c3e50; font-weight: 600;">${name} ${pronouns ? `<span style="font-weight: 400; color: #8c6d70;">(${pronouns})</span>` : ''}</td>
+                        <td class="text-muted" style="padding: 6px 0; color: #8c6d70; width: 120px;"><strong>Name:</strong></td>
+                        <td class="text-main" style="padding: 6px 0; color: #2c3e50; font-weight: 600;">${name} ${pronouns ? `<span class="text-muted" style="font-weight: 400; color: #8c6d70;">(${pronouns})</span>` : ''}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #8c6d70;"><strong>Email:</strong></td>
-                        <td style="padding: 6px 0;"><a href="mailto:${email}" style="color: #0c4a6e; text-decoration: none; font-weight: 500;">${email}</a></td>
+                        <td class="text-muted" style="padding: 6px 0; color: #8c6d70;"><strong>Email:</strong></td>
+                        <td style="padding: 6px 0;"><a class="text-brand" href="mailto:${email}" style="color: #0c4a6e; text-decoration: none; font-weight: 500;">${email}</a></td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #8c6d70;"><strong>Contact No.:</strong></td>
-                        <td style="padding: 6px 0;"><a href="tel:${phone}" style="color: #2c3e50; text-decoration: none;">${phone}</a></td>
+                        <td class="text-muted" style="padding: 6px 0; color: #8c6d70;"><strong>Contact No.:</strong></td>
+                        <td style="padding: 6px 0;"><a class="text-main" href="tel:${phone}" style="color: #2c3e50; text-decoration: none;">${phone}</a></td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #8c6d70;"><strong>Social Link:</strong></td>
-                        <td style="padding: 6px 0; color: #2c3e50;">${socialLink}</td>
+                        <td class="text-muted" style="padding: 6px 0; color: #8c6d70;"><strong>Social Link:</strong></td>
+                        <td class="text-main" style="padding: 6px 0; color: #2c3e50;">${socialLink}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 6px 0; color: #8c6d70; vertical-align: top;"><strong>Delivery Address:</strong></td>
-                        <td style="padding: 6px 0; color: #2c3e50;">
+                        <td class="text-muted" style="padding: 6px 0; color: #8c6d70; vertical-align: top;"><strong>Delivery Address:</strong></td>
+                        <td class="text-main" style="padding: 6px 0; color: #2c3e50;">
                           ${address.replace(/\n/g, '<br/>')}
-                          <div style="font-size: 12px; color: #8c6d70; margin-top: 4px;">Via ${formatShipping(shippingMethod)}</div>
+                          <div class="text-muted" style="font-size: 12px; color: #8c6d70; margin-top: 4px;">Via ${formatShipping(shippingMethod)}</div>
                         </td>
                       </tr>
                     </table>
@@ -244,13 +261,13 @@ export const submitOrder = createServerFn({ method: 'POST' })
                     ${personalizedDetailsHtml}
 
                     <!-- Action Buttons -->
-                    <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #ebdcd5; text-align: center;">
+                    <div class="border-subtle" style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #ebdcd5; text-align: center;">
                       ${publicUrl && publicUrl !== 'demo_receipt_preview' ? `
-                        <a href="${publicUrl}" target="_blank" style="display: inline-block; padding: 12px 24px; background: #0c4a6e; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px; margin-right: 8px; margin-bottom: 8px;">
+                        <a href="${publicUrl}" target="_blank" style="display: inline-block; padding: 12px 24px; background: #0c4a6e; color: #ffffff !important; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px; margin-right: 8px; margin-bottom: 8px;">
                           🔍 View Payment Receipt
                         </a>
                       ` : ''}
-                      <a href="https://www.lettersfromrosie.com/dashboard" target="_blank" style="display: inline-block; padding: 12px 24px; background: #43282b; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px; margin-bottom: 8px;">
+                      <a href="https://www.lettersfromrosie.com/dashboard" target="_blank" style="display: inline-block; padding: 12px 24px; background: #43282b; color: #ffffff !important; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px; margin-bottom: 8px;">
                         🌸 Open Creator Dashboard
                       </a>
                     </div>
@@ -258,9 +275,9 @@ export const submitOrder = createServerFn({ method: 'POST' })
                   </div>
 
                   <!-- Footer -->
-                  <div style="background: #faf8f5; padding: 20px 24px; text-align: center; font-size: 12px; color: #8c6d70; border-top: 1px solid #ebdcd5;">
+                  <div class="bg-subtle border-subtle text-muted" style="background: #faf8f5; padding: 20px 24px; text-align: center; font-size: 12px; color: #8c6d70; border-top: 1px solid #ebdcd5;">
                     <p style="margin: 0 0 4px;">This is an automated order alert from <strong>Letters from Rosie</strong>.</p>
-                    <p style="margin: 0;"><a href="https://www.lettersfromrosie.com" style="color: #8c6d70; text-decoration: underline;">lettersfromrosie.com</a></p>
+                    <p style="margin: 0;"><a class="text-muted" href="https://www.lettersfromrosie.com" style="color: #8c6d70; text-decoration: underline;">lettersfromrosie.com</a></p>
                   </div>
 
                 </div>
@@ -308,13 +325,31 @@ export const submitOrder = createServerFn({ method: 'POST' })
               <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta name="color-scheme" content="light dark">
+                <meta name="supported-color-schemes" content="light dark">
                 <title>Pre-Order Confirmation — Letters from Rosie</title>
+                <style>
+                  :root { color-scheme: light dark; supported-color-schemes: light dark; }
+                  @media (prefers-color-scheme: dark) {
+                    body { background-color: #1a1a1a !important; }
+                    .email-container { background-color: #242424 !important; border-color: #333 !important; }
+                    .text-main { color: #f0f0f0 !important; }
+                    .text-muted { color: #a0a0a0 !important; }
+                    .text-brand { color: #93c5fd !important; }
+                    .bg-subtle { background-color: #2a2a2a !important; border-color: #333 !important; }
+                    .bg-accent { background-color: #2c2122 !important; border-color: #4a383a !important; }
+                    .border-subtle { border-color: #333 !important; }
+                    .header-banner { background: linear-gradient(135deg, #2a181a 0%, #1a1012 100%) !important; }
+                    td, p, li { color: #f0f0f0 !important; }
+                    a { color: #93c5fd !important; }
+                  }
+                </style>
               </head>
               <body style="margin: 0; padding: 24px 12px; background-color: #f7f3ee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2c3e50;">
-                <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
+                <div class="email-container" style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
                   
                   <!-- Top Banner -->
-                  <div style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
+                  <div class="header-banner" style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
                     <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
                       Letters from Rosie
                     </span>
@@ -328,58 +363,58 @@ export const submitOrder = createServerFn({ method: 'POST' })
 
                   <!-- Content -->
                   <div style="padding: 28px;">
-                    <p style="font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: #2c3e50;">
+                    <p class="text-main" style="font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: #2c3e50;">
                       Hi <strong>${name}</strong>,
                     </p>
-                    <p style="font-size: 14px; line-height: 1.6; margin: 0 0 20px; color: #4a383a;">
+                    <p class="text-main" style="font-size: 14px; line-height: 1.6; margin: 0 0 20px; color: #4a383a;">
                       Thank you so much for ordering my book! Your copy of <em>The Art of Living at Your Own Pace</em> has been reserved. We have received your payment screenshot and are currently verifying it.
                     </p>
 
                     <!-- Order Summary Box -->
-                    <div style="background: #faf8f5; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
-                      <h3 style="margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #8c6d70; border-bottom: 1px solid #ebdcd5; padding-bottom: 6px;">
+                    <div class="bg-subtle border-subtle" style="background: #faf8f5; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
+                      <h3 class="text-muted border-subtle" style="margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #8c6d70; border-bottom: 1px solid #ebdcd5; padding-bottom: 6px;">
                         📋 Pre-Order Summary
                       </h3>
                       <table style="width: 100%; font-size: 13px; line-height: 1.6; border-collapse: collapse;">
                         <tr>
-                          <td style="padding: 4px 0; color: #8c6d70; width: 130px;"><strong>Edition:</strong></td>
-                          <td style="padding: 4px 0; font-weight: 700; color: #2c3e50;">${packageType === 'personalized' ? '✨ Personalized Edition (Signed copy + Postcard + Photocard + Bookmark)' : '📖 Standard Edition (Signed copy + Bookmark)'}</td>
+                          <td class="text-muted" style="padding: 4px 0; color: #8c6d70; width: 130px;"><strong>Edition:</strong></td>
+                          <td class="text-main" style="padding: 4px 0; font-weight: 700; color: #2c3e50;">${packageType === 'personalized' ? '✨ Personalized Edition (Signed copy + Postcard + Photocard + Bookmark)' : '📖 Standard Edition (Signed copy + Bookmark)'}</td>
                         </tr>
                         <tr>
-                          <td style="padding: 4px 0; color: #8c6d70;"><strong>Total Paid:</strong></td>
-                          <td style="padding: 4px 0; font-weight: 800; color: #0c4a6e; font-size: 15px;">₱${totalAmount.toFixed(2)}</td>
+                          <td class="text-muted" style="padding: 4px 0; color: #8c6d70;"><strong>Total Paid:</strong></td>
+                          <td class="text-brand" style="padding: 4px 0; font-weight: 800; color: #0c4a6e; font-size: 15px;">₱${totalAmount.toFixed(2)}</td>
                         </tr>
                         <tr>
-                          <td style="padding: 4px 0; color: #8c6d70;"><strong>Delivery Address:</strong></td>
-                          <td style="padding: 4px 0; color: #2c3e50;">${address.replace(/\n/g, ', ')}</td>
+                          <td class="text-muted" style="padding: 4px 0; color: #8c6d70;"><strong>Delivery Address:</strong></td>
+                          <td class="text-main" style="padding: 4px 0; color: #2c3e50;">${address.replace(/\n/g, ', ')}</td>
                         </tr>
                         <tr>
-                          <td style="padding: 4px 0; color: #8c6d70;"><strong>Shipping:</strong></td>
-                          <td style="padding: 4px 0; color: #2c3e50;">${formatShipping(shippingMethod)}</td>
+                          <td class="text-muted" style="padding: 4px 0; color: #8c6d70;"><strong>Shipping:</strong></td>
+                          <td class="text-main" style="padding: 4px 0; color: #2c3e50;">${formatShipping(shippingMethod)}</td>
                         </tr>
                       </table>
                     </div>
 
                     ${packageType === 'personalized' ? `
-                      <div style="margin-bottom: 24px; padding: 16px; background-color: #fdfaf6; border-left: 4px solid #d9777f; border-radius: 8px;">
-                        <h4 style="margin: 0 0 8px; color: #43282b; font-size: 13px; text-transform: uppercase;">✨ Your Custom Details</h4>
-                        <p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Standard'}</p>
-                        ${additionalPhotocards ? `<p style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Additional Photocards:</strong> ${additionalPhotocards}</p>` : ''}
+                      <div class="bg-accent border-subtle" style="margin-bottom: 24px; padding: 16px; background-color: #fdfaf6; border-left: 4px solid #d9777f; border-radius: 8px;">
+                        <h4 class="text-main" style="margin: 0 0 8px; color: #43282b; font-size: 13px; text-transform: uppercase;">✨ Your Custom Details</h4>
+                        <p class="text-main" style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Freebie Photocard:</strong> ${freebiePhotocard || 'Standard'}</p>
+                        ${additionalPhotocards ? `<p class="text-main" style="margin: 4px 0; font-size: 13px; color: #4a383a;"><strong>Additional Photocards:</strong> ${additionalPhotocards}</p>` : ''}
                         ${postcardMessage ? `
-                          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ebdcd5;">
-                            <span style="font-size: 11px; color: #8c6d70; text-transform: uppercase; font-weight: 700;">Your note for Rosie's postcard:</span>
-                            <p style="margin: 4px 0 0; font-size: 13px; font-style: italic; color: #2c3e50;">"${postcardMessage.replace(/\n/g, '<br/>')}"</p>
+                          <div class="border-subtle" style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ebdcd5;">
+                            <span class="text-muted" style="font-size: 11px; color: #8c6d70; text-transform: uppercase; font-weight: 700;">Your note for Rosie's postcard:</span>
+                            <p class="text-main" style="margin: 4px 0 0; font-size: 13px; font-style: italic; color: #2c3e50;">"${postcardMessage.replace(/\n/g, '<br/>')}"</p>
                           </div>
                         ` : ''}
                       </div>
                     ` : ''}
 
                     <!-- What's Next Steps -->
-                    <div style="background: #fdfaf6; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
-                      <h4 style="margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b;">
+                    <div class="bg-accent border-subtle" style="background: #fdfaf6; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
+                      <h4 class="text-main" style="margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b;">
                         📦 What Happens Next?
                       </h4>
-                      <ol style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: #4a383a;">
+                      <ol class="text-main" style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: #4a383a;">
                         <li><strong>Payment Verification:</strong> We will verify your payment screenshot against bank/GCash records.</li>
                         <li><strong>Book Signing & Packaging:</strong> Rosie will hand-sign your copy and carefully prepare your parcel with your goodies.</li>
                         <li><strong>Courier Dispatch:</strong> Once your parcel is picked up, you will receive courier updates so you can track your delivery.</li>
@@ -387,13 +422,13 @@ export const submitOrder = createServerFn({ method: 'POST' })
                     </div>
 
                     <!-- Note & Support -->
-                    <p style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
+                    <p class="text-muted" style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
                       If you have any questions, need to update your contact number or delivery address, simply reply directly to this email or send a DM on Instagram 
-                      <a href="https://instagram.com/lettersfromrosie" target="_blank" style="color: #0c4a6e; text-decoration: none; font-weight: 600;">@lettersfromrosie</a>.
+                      <a class="text-brand" href="https://instagram.com/lettersfromrosie" target="_blank" style="color: #0c4a6e; text-decoration: none; font-weight: 600;">@lettersfromrosie</a>.
                     </p>
 
                     <div style="text-align: center; margin-top: 24px;">
-                      <a href="https://www.lettersfromrosie.com" target="_blank" style="display: inline-block; padding: 12px 28px; background: #43282b; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px;">
+                      <a href="https://www.lettersfromrosie.com" target="_blank" style="display: inline-block; padding: 12px 28px; background: #43282b; color: #ffffff !important; text-decoration: none; font-weight: 700; font-size: 13px; border-radius: 9999px;">
                         Visit Letters from Rosie 🌸
                       </a>
                     </div>
@@ -401,10 +436,10 @@ export const submitOrder = createServerFn({ method: 'POST' })
                   </div>
 
                   <!-- Footer -->
-                  <div style="background: #faf8f5; padding: 20px 24px; text-align: center; font-size: 12px; color: #8c6d70; border-top: 1px solid #ebdcd5;">
+                  <div class="bg-subtle border-subtle text-muted" style="background: #faf8f5; padding: 20px 24px; text-align: center; font-size: 12px; color: #8c6d70; border-top: 1px solid #ebdcd5;">
                     <p style="margin: 0 0 4px;">With heartfelt love and gratitude,</p>
-                    <p style="margin: 0 0 8px; font-weight: 700; color: #43282b; font-size: 14px;">Rosie (Roselyn Mariano)</p>
-                    <p style="margin: 0;"><a href="https://www.lettersfromrosie.com" style="color: #8c6d70; text-decoration: underline;">lettersfromrosie.com</a></p>
+                    <p class="text-main" style="margin: 0 0 8px; font-weight: 700; color: #43282b; font-size: 14px;">Rosie (Roselyn Mariano)</p>
+                    <p style="margin: 0;"><a class="text-muted" href="https://www.lettersfromrosie.com" style="color: #8c6d70; text-decoration: underline;">lettersfromrosie.com</a></p>
                   </div>
 
                 </div>
@@ -552,11 +587,29 @@ export const sendNotificationEmail = createServerFn({ method: 'POST' })
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta name="color-scheme" content="light dark">
+          <meta name="supported-color-schemes" content="light dark">
           <title>${subject}</title>
+          <style>
+            :root { color-scheme: light dark; supported-color-schemes: light dark; }
+            @media (prefers-color-scheme: dark) {
+              body { background-color: #1a1a1a !important; }
+              .email-container { background-color: #242424 !important; border-color: #333 !important; }
+              .text-main { color: #f0f0f0 !important; }
+              .text-muted { color: #a0a0a0 !important; }
+              .text-brand { color: #93c5fd !important; }
+              .bg-subtle { background-color: #2a2a2a !important; border-color: #333 !important; }
+              .bg-accent { background-color: #2c2122 !important; border-color: #4a383a !important; }
+              .border-subtle { border-color: #333 !important; }
+              .header-banner { background: linear-gradient(135deg, #2a181a 0%, #1a1012 100%) !important; }
+              td, p, li { color: #f0f0f0 !important; }
+              a { color: #93c5fd !important; }
+            }
+          </style>
         </head>
         <body style="margin: 0; padding: 24px 12px; background-color: #f7f3ee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2c3e50;">
-          <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
-            <div style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
+          <div class="email-container" style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
+            <div class="header-banner" style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
               <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
                 Letters from Rosie
               </span>
@@ -565,15 +618,15 @@ export const sendNotificationEmail = createServerFn({ method: 'POST' })
               </h1>
             </div>
             <div style="padding: 28px;">
-              <p style="font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: #2c3e50;">
+              <p class="text-main" style="font-size: 15px; line-height: 1.6; margin: 0 0 16px; color: #2c3e50;">
                 Hi <strong>${customer_name}</strong>,
               </p>
-              <p style="font-size: 15px; line-height: 1.6; margin: 0 0 20px; color: #4a383a;">
+              <p class="text-main" style="font-size: 15px; line-height: 1.6; margin: 0 0 20px; color: #4a383a;">
                 ${message}
               </p>
-              <p style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
+              <p class="text-muted" style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
                 If you have any questions, simply reply directly to this email or send a DM on Instagram 
-                <a href="https://instagram.com/lettersfromrosie" target="_blank" style="color: #0c4a6e; text-decoration: none; font-weight: 600;">@lettersfromrosie</a>.
+                <a class="text-brand" href="https://instagram.com/lettersfromrosie" target="_blank" style="color: #0c4a6e; text-decoration: none; font-weight: 600;">@lettersfromrosie</a>.
               </p>
             </div>
           </div>
