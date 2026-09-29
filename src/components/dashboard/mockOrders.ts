@@ -51,7 +51,7 @@ export const MOCK_ORDERS: OrderRecord[] = [
     freebie_photocard: 'Design 3A (Cloud Reflection)',
     additional_photocards: null,
     postcard_message: 'A reminder about not rushing into the future and trusting my current pace in life.',
-    total_amount: 699,
+    total_amount: 799,
     receipt_url: '/images/payments/land.jpg',
     status: 'shipped',
   },

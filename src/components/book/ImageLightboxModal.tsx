@@ -20,7 +20,7 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
   image,
   onClose,
   onSelectImage,
-  totalAmount = 650,
+  totalAmount = 750,
   onCoverChange
 }) => {
   if (!image) return null

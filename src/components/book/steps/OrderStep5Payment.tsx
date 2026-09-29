@@ -272,7 +272,7 @@ export const OrderStep5Payment: React.FC<OrderStep5PaymentProps> = ({
         <div className="flex justify-between"><span className="text-[var(--sea-ink-soft)]">Recipient</span><span className="font-semibold text-[var(--sea-ink)]">{name} {pronouns && `(${pronouns})`}</span></div>
         <div className="flex justify-between"><span className="text-[var(--sea-ink-soft)]">Email</span><span className="font-semibold text-[var(--sea-ink)]">{email}</span></div>
         <div className="flex justify-between"><span className="text-[var(--sea-ink-soft)]">Social / Account</span><span className="font-semibold text-[var(--sea-ink)]">{socialLink}</span></div>
-        <div className="flex justify-between"><span className="text-[var(--sea-ink-soft)]">Package</span><span className="font-semibold text-[var(--sea-ink)]">{packageType === 'standard' ? 'Standard Edition (₱650)' : 'Personalized Edition (₱699)'}</span></div>
+        <div className="flex justify-between"><span className="text-[var(--sea-ink-soft)]">Package</span><span className="font-semibold text-[var(--sea-ink)]">{packageType === 'standard' ? 'Standard Edition (₱750)' : 'Personalized Edition (₱799)'}</span></div>
         <div className="flex justify-between"><span className="text-[var(--sea-ink-soft)]">Shipping</span><span className="font-semibold text-[var(--sea-ink)]">{shippingFee === 0 ? 'Buyer pays courier' : `₱${shippingFee}`}</span></div>
         <div className="flex justify-between pt-2 border-t border-[var(--line)]"><span className="font-bold text-[var(--sea-ink)]">Total Due</span><span className="font-bold text-lg text-[var(--lagoon-deep)]">₱{totalAmount.toFixed(2)}</span></div>
       </div>

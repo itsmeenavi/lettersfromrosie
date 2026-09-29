@@ -57,7 +57,7 @@ export const OrderStep4Package: React.FC<OrderStep4PackageProps> = ({
             <div className="flex-1">
               <div className="flex justify-between items-baseline mb-2">
                 <h4 className="font-bold text-lg text-[var(--sea-ink)]">Standard Edition</h4>
-                <span className="font-bold text-xl text-[var(--lagoon-deep)]">₱650</span>
+                <span className="font-bold text-xl text-[var(--lagoon-deep)]">₱750</span>
               </div>
               <ul className="text-sm text-[var(--sea-ink-soft)] space-y-1">
                 <li className="flex gap-2"><span className="text-[var(--lagoon)]">✦</span> Author Signed Copy</li>
@@ -95,7 +95,7 @@ export const OrderStep4Package: React.FC<OrderStep4PackageProps> = ({
             <div className="flex-1">
               <div className="flex justify-between items-baseline mb-2">
                 <h4 className="font-bold text-lg text-[var(--sea-ink)]">Personalized Edition</h4>
-                <span className="font-bold text-xl text-[var(--lagoon-deep)]">₱699</span>
+                <span className="font-bold text-xl text-[var(--lagoon-deep)]">₱799</span>
               </div>
               <ul className="text-sm text-[var(--sea-ink-soft)] space-y-1">
                 <li className="flex gap-2"><span className="text-[var(--lagoon)]">✦</span> Author Signed Copy</li>

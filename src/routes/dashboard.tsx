@@ -359,8 +359,8 @@ function DashboardComponent() {
             className="px-4 py-2.5 rounded-full border border-[var(--line)] bg-white text-xs font-bold text-[var(--sea-ink)] focus:outline-none focus:border-[var(--lagoon-deep)] cursor-pointer"
           >
             <option value="all">All Packages</option>
-            <option value="standard">Standard Edition (₱650)</option>
-            <option value="personalized">Personalized Edition (₱699)</option>
+            <option value="standard">Standard Edition (₱750)</option>
+            <option value="personalized">Personalized Edition (₱799)</option>
           </select>
         </div>
 
