@@ -43,8 +43,13 @@ export const BookHeroShowcase: React.FC<BookHeroShowcaseProps> = ({
     <section className="mx-auto max-w-6xl mb-20 lg:mb-28">
       {/* Section Header */}
       <div className="mb-12 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[var(--lagoon)]/15 text-[var(--lagoon-deep)] text-xs font-bold uppercase tracking-wider mb-4">
-          <span>📖 Official Book Release</span>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--lagoon)]/15 text-[var(--lagoon-deep)] text-xs font-bold uppercase tracking-wider">
+            <span>📖 Official Book Release</span>
+          </div>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 text-red-700 border border-red-200 text-xs font-bold uppercase tracking-wider shadow-sm animate-pulse">
+            <span>⏳ 14-Day Micro-Batch Pre-Order</span>
+          </div>
         </div>
         <h1 className="display-title text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--sea-ink)] drop-shadow-sm max-w-3xl mx-auto">
           The Art of Living at Your Own Pace

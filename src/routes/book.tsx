@@ -192,15 +192,53 @@ function BookComponent() {
     }
   }
 
-  const handleReceiptChange = (file: File) => {
-    setReceiptFile(file)
+  const handleReceiptChange = async (file: File) => {
     setTouched(prev => ({ ...prev, receipt: true }))
     setErrors(prev => ({ ...prev, receipt: '' }))
+    
+    // Instant preview
     const reader = new FileReader()
-    reader.onload = () => {
-      setReceiptPreview(reader.result as string)
-    }
+    reader.onload = () => setReceiptPreview(reader.result as string)
     reader.readAsDataURL(file)
+
+    // Client-side compression for images
+    if (file.type.startsWith('image/')) {
+      try {
+        const img = new Image()
+        img.src = URL.createObjectURL(file)
+        await new Promise(resolve => img.onload = resolve)
+        
+        const canvas = document.createElement('canvas')
+        let { width, height } = img
+        const MAX_DIM = 1200
+        if (width > height && width > MAX_DIM) {
+          height *= MAX_DIM / width
+          width = MAX_DIM
+        } else if (height > MAX_DIM) {
+          width *= MAX_DIM / height
+          height = MAX_DIM
+        }
+        
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx?.drawImage(img, 0, 0, width, height)
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() })
+            setReceiptFile(compressedFile)
+          } else {
+            setReceiptFile(file)
+          }
+        }, 'image/jpeg', 0.8)
+      } catch (e) {
+        console.warn('Image compression failed, using original file', e)
+        setReceiptFile(file)
+      }
+    } else {
+      setReceiptFile(file)
+    }
   }
 
   const scrollToForm = () => {
