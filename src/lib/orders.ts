@@ -187,7 +187,6 @@ export const submitOrder = createServerFn({ method: 'POST' })
                     .bg-subtle { background-color: #2a2a2a !important; border-color: #333 !important; }
                     .bg-accent { background-color: #2c2122 !important; border-color: #4a383a !important; }
                     .border-subtle { border-color: #333 !important; }
-                    .header-banner { background: linear-gradient(135deg, #2a181a 0%, #1a1012 100%) !important; }
                     td { color: #f0f0f0 !important; }
                     a { color: #93c5fd !important; }
                   }
@@ -197,11 +196,11 @@ export const submitOrder = createServerFn({ method: 'POST' })
                 <div class="email-container" style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
                   
                   <!-- Top Header Banner -->
-                  <div class="header-banner" style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
-                    <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
+                  <div class="header-banner bg-subtle border-subtle" style="background: #fdfaf6; border-bottom: 1px solid #ebdcd5; padding: 32px 28px; text-align: center;">
+                    <span class="text-muted" style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #8c6d70; margin-bottom: 8px;">
                       Letters from Rosie
                     </span>
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px;">
+                    <h1 class="text-main" style="margin: 0; font-size: 24px; font-weight: 700; color: #43282b; letter-spacing: -0.3px;">
                       🌸 New Book Pre-Order!
                     </h1>
                   </div>
@@ -339,7 +338,6 @@ export const submitOrder = createServerFn({ method: 'POST' })
                     .bg-subtle { background-color: #2a2a2a !important; border-color: #333 !important; }
                     .bg-accent { background-color: #2c2122 !important; border-color: #4a383a !important; }
                     .border-subtle { border-color: #333 !important; }
-                    .header-banner { background: linear-gradient(135deg, #2a181a 0%, #1a1012 100%) !important; }
                     td, p, li { color: #f0f0f0 !important; }
                     a { color: #93c5fd !important; }
                   }
@@ -349,14 +347,14 @@ export const submitOrder = createServerFn({ method: 'POST' })
                 <div class="email-container" style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #ebdcd5;">
                   
                   <!-- Top Banner -->
-                  <div class="header-banner" style="background: linear-gradient(135deg, #43282b 0%, #2f1d20 100%); padding: 32px 28px; text-align: center; color: #ffffff;">
-                    <span style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #f2c4ce; margin-bottom: 8px;">
+                  <div class="header-banner bg-subtle border-subtle" style="background: #fdfaf6; border-bottom: 1px solid #ebdcd5; padding: 32px 28px; text-align: center;">
+                    <span class="text-muted" style="display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #8c6d70; margin-bottom: 8px;">
                       Letters from Rosie
                     </span>
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px;">
+                    <h1 class="text-main" style="margin: 0; font-size: 24px; font-weight: 700; color: #43282b; letter-spacing: -0.3px;">
                       Thank you for your pre-order! 🌸
                     </h1>
-                    <p style="margin: 8px 0 0; font-size: 13px; color: #ebdcd5; opacity: 0.9;">
+                    <p class="text-muted" style="margin: 8px 0 0; font-size: 13px; color: #8c6d70;">
                       The Art of Living at Your Own Pace
                     </p>
                   </div>
