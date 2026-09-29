@@ -136,8 +136,8 @@ export const submitOrder = createServerFn({ method: 'POST' })
             const emails = notificationEmailsStr.split(',').map((e: string) => e.trim()).filter(Boolean)
 
             const packageLabel = packageType === 'personalized'
-              ? 'Personalized Edition (₱699)'
-              : 'Standard Edition (₱650)'
+              ? 'Personalized Edition (₱799)'
+              : 'Standard Edition (₱750)'
 
             const formatShipping = (m: string) => {
               switch (m) {
@@ -420,6 +420,22 @@ export const submitOrder = createServerFn({ method: 'POST' })
                         <li><strong>Courier Dispatch:</strong> Once your parcel is picked up, you will receive courier updates so you can track your delivery.</li>
                       </ol>
                     </div>
+
+                    ${shippingMethod === 'lalamove' ? `
+                      <!-- Lalamove Specific Info -->
+                      <div class="bg-subtle border-subtle" style="background: #fdfaf6; border-radius: 12px; padding: 18px; border: 1px solid #ebdcd5; margin-bottom: 24px;">
+                        <h4 class="text-main" style="margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #43282b;">
+                          🛵 Lalamove Pick-up Details
+                        </h4>
+                        <p class="text-main" style="margin: 0 0 8px; font-size: 13px; line-height: 1.6; color: #4a383a;">
+                          Since you selected Same-Day Pick-up, you will be responsible for booking the Lalamove/Grab rider. <strong>Please wait for an email confirming that your order is "Preparing" or "Ready for Pick-up" before booking a rider.</strong>
+                        </p>
+                        <p class="text-main" style="margin: 0; font-size: 13px; color: #4a383a; background: #fff; padding: 10px; border-radius: 6px; border: 1px dashed #ebdcd5;">
+                          <strong>Pick-up Address:</strong><br/>
+                          137 Aguinaldo st. Tandang Sora Taguig City
+                        </p>
+                      </div>
+                    ` : ''}
 
                     <!-- Note & Support -->
                     <p class="text-muted" style="font-size: 13px; color: #8c6d70; line-height: 1.6; margin: 0 0 20px;">
