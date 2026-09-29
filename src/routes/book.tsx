@@ -75,15 +75,15 @@ function BookComponent() {
 
   // Pricing
   const packagePrices: Record<PackageType, number> = {
-    standard: 650,
-    personalized: 699
+    standard: 750,
+    personalized: 799
   }
   const basePrice = packagePrices[packageType]
   const shippingRates: Record<string, number> = {
-    'jt_manila': 85,
-    'jt_luzon': 85,
-    'jt_visayas': 100,
-    'jt_mindanao': 105,
+    'jt_manila': 105,
+    'jt_luzon': 125,
+    'jt_visayas': 155,
+    'jt_mindanao': 190,
     'lalamove': 0
   }
   const shippingFee = shippingRates[shippingMethod] || 0

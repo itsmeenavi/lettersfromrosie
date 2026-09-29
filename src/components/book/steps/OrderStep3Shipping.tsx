@@ -120,34 +120,34 @@ export const OrderStep3Shipping: React.FC<OrderStep3ShippingProps> = ({
       </h4>
       <div className="space-y-3 mb-10">
         {[
-          { id: 'jt_manila', label: 'J&T Express (Metro Manila)', desc: '1–2 Days Transit', price: 85 },
-          { id: 'jt_luzon', label: 'J&T Express (Luzon Provincial)', desc: '1–2 Days Transit', price: 85 },
-          { id: 'jt_visayas', label: 'J&T Express (Visayas)', desc: '3–4 Days Transit', price: 100 },
-          { id: 'jt_mindanao', label: 'J&T Express (Mindanao)', desc: '3–4 Days Transit', price: 105 },
-          { id: 'lalamove', label: 'Lalamove / Grab (Same-Day Metro Manila)', desc: 'Buyer books and pays courier directly upon pickup', price: 0 }
+          { id: 'jt_manila', label: 'J&T Express (Metro Manila)', desc: '1–2 Days Transit', price: 105 },
+          { id: 'jt_luzon', label: 'J&T Express (Luzon Provincial)', desc: '1–2 Days Transit', price: 125 },
+          { id: 'jt_visayas', label: 'J&T Express (Visayas)', desc: '3–4 Days Transit', price: 155 },
+          { id: 'jt_mindanao', label: 'J&T Express (Mindanao)', desc: '3–4 Days Transit', price: 190 },
+          { id: 'lalamove', label: 'Lalamove / Grab (Same-Day Metro Manila)', desc: 'Buyer books and pays courier directly upon pickup. Pick-up PIN and location will be provided via email once your order status is confirmed, preparing, or shipped.', price: 0 }
         ].map((option) => (
           <label
             key={option.id}
-            className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
+            className={`flex items-center justify-between gap-4 p-4 rounded-2xl border cursor-pointer transition-all ${
               shippingMethod === option.id
                 ? 'border-[var(--lagoon-deep)] bg-white shadow-sm ring-1 ring-[var(--lagoon)]/30'
                 : 'border-[var(--line)] bg-white/50 hover:bg-white/70'
             }`}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1">
               <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   shippingMethod === option.id ? 'border-[var(--lagoon-deep)]' : 'border-gray-300'
                 }`}
               >
                 {shippingMethod === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[var(--lagoon-deep)]" />}
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="font-bold text-[var(--sea-ink)] text-sm sm:text-base">{option.label}</p>
                 <p className="text-xs text-[var(--sea-ink-soft)]">{option.desc}</p>
               </div>
             </div>
-            <span className="font-bold text-[var(--sea-ink)] text-sm sm:text-base">
+            <span className="shrink-0 font-bold text-[var(--sea-ink)] text-sm sm:text-base text-right whitespace-nowrap">
               {option.price === 0 ? 'Buyer pays' : `₱${option.price}`}
             </span>
             <input
