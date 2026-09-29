@@ -432,6 +432,46 @@ function BookComponent() {
     setTimeout(scrollToForm, 100)
   }
 
+  // Developer Bypass for testing forms & emails quickly
+  const handleTestBypass = () => {
+    setName('Rosie Tester')
+    setPronouns('she/her')
+    setEmail('orders@lettersfromrosie.com')
+    setSocialAccounts([{ id: '1', platform: 'instagram', value: 'lettersfromrosie' }])
+    setPhone('09171234567')
+    setAddress('123 Test Street, Developer City, Metro Manila')
+    setShippingMethod('lalamove')
+    setPackageType('personalized')
+    setFreebiePhotocard('Design 1A')
+    setPostcardMessage('This is a test message to verify the email layout looks good.')
+    
+    // Generate a dummy receipt file
+    const canvas = document.createElement('canvas')
+    canvas.width = 400
+    canvas.height = 400
+    const ctx = canvas.getContext('2d')
+    if (ctx) {
+      ctx.fillStyle = '#f2c4ce'
+      ctx.fillRect(0, 0, 400, 400)
+      ctx.fillStyle = '#43282b'
+      ctx.font = '24px Arial'
+      ctx.fillText('Test Receipt', 130, 200)
+    }
+    
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], 'test-receipt.jpg', { type: 'image/jpeg' })
+        setReceiptFile(file)
+        setReceiptPreview(URL.createObjectURL(blob))
+      }
+    }, 'image/jpeg')
+    
+    setConfirmed(true)
+    setStep(5)
+    setTimeout(scrollToForm, 100)
+  }
+
+
   return (
     <main className="page-wrap px-4 py-12 lg:py-20">
       {/* SECTION 1: HERO & INTERACTIVE BOOK SHOWCASE */}
@@ -449,7 +489,10 @@ function BookComponent() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--lagoon)]/15 text-[var(--lagoon-deep)] text-xs font-bold uppercase tracking-wider mb-2">
             <span>🇵🇭 Philippine Readers</span>
           </div>
-          <h2 className="display-title text-3xl sm:text-4xl font-bold text-[var(--sea-ink)]">
+          <h2 
+            className="display-title text-3xl sm:text-4xl font-bold text-[var(--sea-ink)] select-none cursor-text"
+            onDoubleClick={handleTestBypass}
+          >
             Pre-Order Form
           </h2>
           <p className="text-sm text-[var(--sea-ink-soft)] mt-2">
